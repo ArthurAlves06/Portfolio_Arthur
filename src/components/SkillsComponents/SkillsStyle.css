@@ -1,0 +1,120 @@
+.skills {
+  background: var(--bg);
+  padding: var(--pad-section) 6%;
+  color: var(--text);
+}
+
+.heading {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+  text-align: center;
+  color: var(--text);
+}
+
+.heading span {
+  display: inline-block;
+  height: 6px;
+  width: 80px;
+  background: linear-gradient(90deg, var(--primary), var(--accent));
+  margin-top: 12px;
+  border-radius: 6px;
+}
+
+/* descrição opcional abaixo do título */
+.skills-sub {
+  text-align: center;
+  color: var(--muted);
+  max-width: 800px;
+  margin: 0.8rem auto 2.4rem;
+  font-size: 1.4rem;
+}
+
+/* container com 3 blocos grandes */
+.skills-container {
+  max-width: 1000px;
+  margin: 3.2rem auto 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.2rem;
+  align-items: stretch;
+  justify-content: center; /* centraliza o conjunto de colunas */
+  justify-items: center;   /* centraliza cada card dentro da célula */
+}
+
+/* bloco/grupo */
+.skill-group {
+  background: var(--card-bg, var(--surface));
+  border-radius: 14px;
+  padding: 2rem;
+  border: 1px solid var(--border-weak);
+  box-shadow: 0 18px 50px rgba(2,6,23,0.6);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  min-height: 220px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 360px; /* controla a largura do card para facilitar centralização */
+}
+
+.skill-group:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 30px 80px rgba(31,52,188,0.08), 0 0 30px rgba(31,52,188,0.18);
+  border-color: rgba(31,52,188,0.9);
+}
+
+/* ícone pequeno no topo */
+.group-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  background: rgba(31,52,188,0.06);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  margin-bottom: 1.2rem;
+}
+
+/* título do grupo */
+.group-title {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 1.2rem;
+}
+
+/* lista de skills interna */
+.group-list {
+  list-style: disc;
+  padding-left: 1.4rem;
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.4rem;
+  line-height: 1.8;
+}
+
+.group-item {
+  margin-bottom: 0.8rem;
+  color: var(--text);
+}
+
+/* responsivo */
+@media (max-width: 1000px) {
+  .skills-container {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.6rem;
+  }
+  .heading { font-size: 2.6rem; }
+}
+
+@media (max-width: 600px) {
+  .skills {
+    padding: 4rem 5%;
+  }
+  .skills-container {
+    grid-template-columns: 1fr;
+  }
+  .heading { font-size: 2.2rem; }
+}

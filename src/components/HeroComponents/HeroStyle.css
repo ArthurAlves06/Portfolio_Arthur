@@ -1,0 +1,143 @@
+:root {
+  /* Cores principais */
+  --bg: #000;
+  --surface: #0f0f11;
+  --card-bg: #ffffff;
+  --text: #ffffff;
+  --muted: #bdbdbd;
+  --primary: #1f34bc; /* rgb(31,52,188) */
+  --accent: #2a6df6;
+
+  /* Sombreamento / bordas */
+  --border-weak: rgba(31,52,188,0.06);
+  --border-strong: rgba(31,52,188,0.12);
+
+  /* Espaçamentos / tipografia */
+  --pad-section: 6rem;
+  --radius: 12px;
+  --heading-size: 3.2rem;
+
+  /* Header (padrões para tema escuro) */
+  --header-bg: rgba(0,0,0,0.55);
+  --header-border: rgba(255,255,255,0.06);
+  --header-text: rgba(255,255,255,0.95);
+}
+
+/* ...existing code... */
+
+body.dark-soft {
+  --bg: #0a0a0a;
+  --surface: #121216;
+  --text: #efefef;
+  --muted: #c7c7c7;
+
+  /* mantém defaults acima para header */
+}
+
+/* Tema claro */
+body.light {
+  --bg: #ffffff;
+  --surface: #f5f6f8;
+  --text: #0b0b0b;
+  --muted: #616161;
+
+  /* header claro para evitar caixa preta */
+  --header-bg: rgba(255,255,255,0.92);
+  --header-border: rgba(0,0,0,0.06);
+  --header-text: #0b0b0b;
+}
+
+.home-content h3 {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+}
+
+.home-img {
+    border-radius: 50%;
+    width: 500px; /* ajuste conforme preferir */
+    height: 500px;
+    overflow: hidden;
+    flex-shrink: 0;
+    position: relative;
+    /* halo externo suave visível fora do círculo (intensidade ligeiramente maior) */
+    box-shadow: 0 0 30px rgba(31,52,188,0.22), 0 0 80px rgba(42,109,246,0.12);
+    transition: box-shadow 260ms ease;
+}
+
+.home-img img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* garante recorte circular perfeito */
+    border-radius: 50%;
+    /* mantém a imagem acima do halo */
+    position: relative;
+    z-index: 1;
+    cursor: pointer;
+    /* transição suavizada: mais lenta e easing mais natural */
+    transition: transform 420ms cubic-bezier(.16,.84,.24,1), filter 420ms ease, box-shadow 420ms ease;
+    will-change: transform;
+    transform-origin: center center;
+    backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    /* sombra interna mínima para profundidade */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+}
+
+/* zoom ativado ao passar sobre o container */
+.home-img:hover img {
+    /* leve aumento, mas mais suave pela transição */
+    transform: scale(1.05);
+}
+
+/* intensifica halo externo durante hover */
+.home-img:hover {
+    box-shadow: 0 0 44px rgba(31,52,188,0.34), 0 0 110px rgba(42,109,246,0.18);
+}
+
+.social-icons {
+    display: flex;
+    gap: 1.2rem;
+    margin: 3rem 0 3rem 0;
+}
+.social-icons .social-btn {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 4.4rem;
+    height: 4.4rem;
+    background-color: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.06);
+    font-size: 1.6rem;
+    border-radius: 50%;
+    transition: transform 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+    color: var(--text);
+}
+.social-icons .social-btn svg {
+    display: block;
+    width: 1.6rem;
+    height: 1.6rem;
+    color: var(--text);
+}
+.social-icons .social-btn:hover {
+    color: var(--bg);
+    transform: translateY(-6px) scale(1.05);
+    background-color: var(--primary);
+    box-shadow: 0 8px 30px rgba(31,52,188,0.18);
+}
+
+.home {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8rem;
+    background-color: var(--bg);
+}
+
+.home .home-content h1 {
+    font-size: 6rem;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    color: var(--text);
+}

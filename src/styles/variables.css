@@ -1,0 +1,52 @@
+:root {
+  /* Cores principais */
+  --bg: #000;
+  --surface: #0f0f11;
+  --card-bg: #ffffff;
+  --text: #ffffff;
+  --muted: #bdbdbd;
+  --primary: #1f34bc; /* rgb(31,52,188) */
+  --accent: #2a6df6;
+
+  /* Sombreamento / bordas */
+  --border-weak: rgba(31,52,188,0.06);
+  --border-strong: rgba(31,52,188,0.12);
+
+  /* Espaçamentos / tipografia */
+  --pad-section: 6rem;
+  --radius: 12px;
+  --heading-size: 3.2rem;
+
+  /* Header (padrões para tema escuro) */
+  --header-bg: rgba(0,0,0,0.55);
+  --header-border: rgba(255,255,255,0.06);
+  --header-text: rgba(255,255,255,0.95);
+}
+
+/* Tema escuro "mais claro" (preto menos intenso) */
+body.dark-soft {
+  --bg: #0a0a0a;
+  --surface: #121216;
+  --text: #efefef;
+  --muted: #c7c7c7;
+
+  /* cartões escuros no tema dark-soft */
+  --card-bg: #0f0f12;
+  --border-weak: rgba(255,255,255,0.03);
+  --border-strong: rgba(255,255,255,0.06);
+
+  /* mantém defaults acima para header */
+}
+
+/* Tema claro */
+body.light {
+  --bg: #ffffff;
+  --surface: #f5f6f8;
+  --text: #0b0b0b;
+  --muted: #616161;
+
+  /* header claro para evitar caixa preta */
+  --header-bg: rgba(255,255,255,0.92);
+  --header-border: rgba(0,0,0,0.06);
+  --header-text: #0b0b0b;
+}

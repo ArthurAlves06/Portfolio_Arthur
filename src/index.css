@@ -1,0 +1,165 @@
+@import './styles/variables.css';
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    border: none;
+    outline: none;
+    font-family: 'Poppins', sans-serif;
+}
+
+html {
+    font-size: 62.5%;
+    scroll-behavior: smooth; /* ADICIONADO */
+}
+
+body {
+    width: 100%;
+    min-height: 100vh;
+    /* trocar height por min-height */
+    /* overflow: hidden; */
+    background-color: var(--bg);
+    color: var(--text);
+}
+
+/* Header styles moved to component-specific CSS (HeaderStyle.css)
+   to avoid conflicts with the header layout and positioning. */
+
+/* nav a {
+    font-size: 1.8rem;
+    color: white;
+    margin-left: 4rem;
+    font-weight: 500;
+    transition: 0.3s ease;
+    border-bottom: 3px solid transparent;
+}
+
+nav a:hover,
+nav a:active {
+    color: rgb(31, 52, 188);
+    border-bottom: 3px solid rgb(31, 52, 188);
+}
+
+@media (max-width: 995px) {
+    nav {
+        position: relative;
+        top: 100%;
+        right: 0%;
+        width: 40%;
+        border-left: 3px solid rgb(31, 52, 188);
+        border-bottom: 3px solid rgb(31, 52, 188);
+        border-bottom-left-radius: 2rem;
+        padding: 1rem;
+        background-color: #161616;
+        border-top: 0.1rem solid rgba(0, 0, 0, 0.1);
+    }
+
+    nav.active {
+        display: block;
+    }
+
+    nav a {
+        display: block;
+        margin: 3rem;
+        font-size: 2rem;
+    }
+
+    nav a:hover,
+    nav a:active {
+        padding: 1rem;
+        border-radius: 0.5rem;
+        border-bottom: 0.5rem solid rgb(31, 52, 188);
+    }
+} */
+
+section {
+    min-height: 100vh;
+    padding: 5rem 9% 5rem;
+    scroll-margin-top: 8rem; /* ADICIONADO: compensa o header fixo ao rolar para âncoras */
+}
+
+span {
+    color: var(--primary);
+}
+
+.btn {
+    display: inline-block;
+    padding: 1rem 2.8rem;
+    background-color: var(--bg);
+    border-radius: 4rem;
+    font-size: 1.6rem;
+    color: var(--primary);
+    letter-spacing: 0.3rem;
+    font-weight: 600;
+    border: 2px solid var(--primary);
+    transition: 0.3s ease;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: rgb(31, 52, 188);
+    color: black;
+    box-shadow: 0 0 25px rgb(31, 52, 188);
+    transform: scale(1.03);
+}
+
+.typing-text {
+    color: var(--primary);
+    font-weight: 600;
+    font-size: 3.4rem;
+    min-width: 280px;
+}
+
+.typing-text span {
+    position: relative;
+}
+
+.typing-text span::before {
+    content: 'Software Developer';
+    color: rgb(31, 52, 188);
+    animation: words 20s infinite;
+}
+
+.typing-text span::after {
+    content: '';
+    background-color: transparent;
+    position: absolute;
+    width: calc(100% + 8px);
+    height: 100%;
+    border-left: 3px solid var(--primary);
+    right: -8px;
+    /* agora com unidade */
+    animation: blink 0.7s steps(1) infinite;
+}
+
+@keyframes cursor {
+    to {
+        border: left 3px solid rgb(31, 52, 188);
+    }
+}
+
+@keyframes words {
+
+    0%,
+    20% {
+        content: 'Software Developer';
+    }
+
+    21%,
+    40% {
+        content: 'Software Developer';
+    }
+
+    41%,
+    60% {
+        content: 'Web Designer';
+    }
+}
+
+@keyframes blink {
+    50% {
+        opacity: 0;
+    }
+}

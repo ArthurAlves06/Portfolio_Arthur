@@ -1,0 +1,146 @@
+/* ...existing code... */
+
+.education {
+  background-color: var(--bg);
+  padding: var(--pad-section) 9% 6rem;
+  color: var(--text);
+  border-top: 3px solid var(--border-strong);
+}
+
+.heading {
+  font-size: var(--heading-size);
+  font-weight: 700;
+  margin-bottom: 3rem;
+  color: var(--text);
+  text-align: center;
+}
+.heading span {
+  color: var(--primary);
+}
+
+.education-row {
+  display: flex;
+  justify-content: center;
+}
+
+.education-column {
+  width: 100%;
+  max-width: 980px;
+}
+
+.title {
+  color: var(--text);
+  font-size: 2rem;
+  margin-bottom: 1.6rem;
+  font-weight: 700;
+}
+
+.education-box {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.6rem;
+}
+
+/* Card */
+.education-item {
+  background: var(--surface);
+  border: 1px solid var(--border-weak);
+  padding: 1.8rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.education-item:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(31,52,188,0.12);
+  border-color: var(--border-strong);
+}
+
+.date {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--primary);
+  font-weight: 600;
+  margin-bottom: 0.8rem;
+  font-size: 1.4rem;
+}
+.education-item i {
+  font-size: 1.6rem;
+  color: var(--primary);
+}
+
+/* Titles & text */
+.education-item h3 {
+  font-size: 1.8rem;
+  margin: 0.2rem 0;
+  color: var(--text);
+}
+.education-item h4 {
+  font-size: 1.4rem;
+  color: var(--muted);
+  margin-bottom: 0.8rem;
+  font-weight: 600;
+}
+.education-item p {
+  color: #d1d1d1;
+  line-height: 1.5;
+  font-size: 1.4rem;
+}
+
+/* Responsive */
+@media (min-width: 700px) {
+  .education-box {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .education {
+    padding: calc(var(--pad-section) / 1.5) 5%;
+  }
+  .heading {
+    font-size: 2.6rem;
+  }
+}
+
+/* Seção de Certificados */
+.certificates-section {
+  margin-top: 6rem;
+  padding-top: 3rem;
+  border-top: 2px solid var(--border-strong);
+}
+
+.certificates-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 2.4rem;
+  text-align: center;
+}
+
+.certificates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  justify-items: center;
+}
+
+@media (max-width: 1024px) {
+  .certificates-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .certificates-grid {
+    grid-template-columns: 1fr;
+    gap: 1.6rem;
+  }
+
+  .certificates-title {
+    font-size: 1.8rem;
+  }
+}

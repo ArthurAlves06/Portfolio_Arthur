@@ -1,0 +1,254 @@
+header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem 0;
+  z-index: 100;
+  background: transparent;
+  transition: background .28s ease, border-bottom .28s ease, padding .2s ease;
+}
+
+/* esconder header quando classe 'hidden' aplicada (rolando para baixo) */
+/* quando a classe 'hidden' é aplicada por scroll descendente:
+   - esconder o logo
+   - remover o fundo/borda (sem barra preta)
+   - manter os links e o botão de tema visíveis */
+header.hidden {
+  background: transparent !important;
+  border-bottom: none !important;
+  padding: 0.6rem 0;
+}
+
+/* garantir que mesmo se 'scrolled' estiver presente, hidden vence */
+header.hidden.scrolled {
+  background: transparent !important;
+  border-bottom: none !important;
+}
+
+/* wrapper centralizado que mantém o nav no centro */
+.header-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2.4rem;
+  position: static; /* alterado: antes era relative */
+}
+
+/* Empurra os links para a posição desejada (ajuste o valor) */
+/* Nota: há outra regra `header nav` mais abaixo — mantive o transform nessa seção mais abaixo para evitar duplicação/confusão */
+
+
+/* linha e comportamento ao rolar */
+header.scrolled {
+  background: var(--header-bg);
+  border-bottom: 1px solid var(--header-border);
+  padding: 0.6rem 0;
+}
+
+/* logo posicionado fora do fluxo para não deslocar nav */
+.logo {
+  font-size: 3rem;
+  font-weight: 800;
+  color: var(--primary);
+  position: absolute;
+  left: 9%;
+  transition: transform .28s ease, opacity .28s ease, visibility .28s ease;
+}
+
+/* manter o logo visível (não alterar largura) ao rolar */
+header.scrolled .logo {
+  opacity: 0.9;
+  transform: translateY(-4px) scale(0.98);
+}
+
+/* Ao rolar para baixo: esconde apenas o logo, mantendo os links visíveis */
+header.logo-hidden .logo {
+  opacity: 0;
+  transform: translateX(-20px) scale(0.95);
+  pointer-events: none;
+  visibility: hidden;
+}
+
+/* nav permanece visível — aqui aplicamos o deslocamento final */
+header nav {
+  display: flex;
+  gap: 2.4rem;
+  align-items: center;
+  margin-left: auto;
+  padding-right: 12rem; /* espaço para os controles no lado direito */
+  transform: none;
+  transition: margin .2s ease, transform .2s ease, color .2s ease;
+  z-index: 100;
+}
+header nav a {
+  font-size: 1.6rem;
+  color: var(--muted);
+  padding-bottom: .4rem;
+  transition: color .2s ease, border-bottom .2s ease, transform .2s ease;
+  border-bottom: 3px solid transparent;
+}
+header nav a.active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+/* botão simples para alternar tema */
+.theme-btn {
+  position: static; /* alterado: agora o botão fica no fluxo dentro do container */
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 0.4rem 0.8rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background .15s ease, color .15s ease, transform .12s ease;
+}
+.theme-btn:hover {
+  transform: translateY(-3px);
+  color: var(--text);
+  background: rgba(255,255,255,0.03);
+}
+
+/* novo container que agrupa idioma + tema e fixa mais à direita */
+.header-controls {
+  position: absolute;
+  right: 6%;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  z-index: 999; /* aumentado para ficar acima dos links */
+  pointer-events: auto;
+}
+
+/* visual separador (opcional) entre nav e controles */
+.header-controls::before {
+  content: "";
+  display: block;
+  width: 1px;
+  height: 28px;
+  background: rgba(255,255,255,0.06);
+  margin-right: 0.8rem;
+}
+
+/* Melhor contraste do divisor e botões no tema claro */
+body.light .header-controls::before {
+  background: rgba(0,0,0,0.14);
+}
+
+body.light .theme-btn {
+  border-color: rgba(0,0,0,0.08);
+  color: rgba(0,0,0,0.75);
+}
+
+body.light .lang-btn {
+  color: rgba(0,0,0,0.65);
+}
+
+body.light .lang-btn.active {
+  box-shadow: none;
+}
+
+/* botões de idioma */
+.lang-switch {
+  display: inline-flex;
+  gap: 0.4rem;
+  background: transparent;
+  border-radius: 8px;
+  padding: 0.1rem;
+}
+.lang-btn {
+  background: transparent;
+  color: var(--muted);
+  padding: 0.35rem 0.6rem;
+  border-radius: 6px;
+  font-size: 1.2rem;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: background .15s ease, color .12s ease, transform .12s ease;
+}
+.lang-btn.active {
+  background: var(--primary);
+  color: var(--bg);
+  border-color: rgba(255,255,255,0.02);
+  transform: translateY(-2px);
+}
+
+/* esconder controles quando em modo nav-only para foco nos links */
+header.nav-only .header-controls {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(-50%) translateX(6px);
+}
+
+/* Smooth hide/show: when nav-only, hide logo and controls but keep nav visible */
+header .logo,
+.header-controls {
+  transition: opacity .28s ease, transform .28s ease, visibility .28s ease;
+}
+
+header.nav-only {
+  padding: 0.4rem 0; /* reduce header height when only nav shown */
+  background: transparent;
+  border-bottom: none;
+}
+
+header.nav-only .logo {
+  opacity: 0;
+  transform: translateY(-8px) scale(0.98);
+  visibility: hidden;
+  pointer-events: none;
+}
+
+header.nav-only .header-controls {
+  opacity: 0;
+  transform: translateY(-6px);
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* ensure nav stays visible and aligned when header is minimized */
+header.nav-only nav {
+  padding-right: 6rem; /* reduce right padding so links stay in view */
+}
+
+/* responsivo: reduzir deslocamento e reorganizar */
+@media (max-width: 900px) {
+  header nav { padding-right: 5rem; }
+  .header-controls { right: 3%; }
+}
+@media (max-width: 600px) {
+  .header-controls { display: none; } /* esconder em telas muito pequenas */
+}
+
+/* Single language icon button */
+.lang-icon {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: transparent;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 1.1rem;
+}
+.lang-icon:hover { background: rgba(255,255,255,0.02); color: var(--text); }
+.lang-code {
+  display: inline-block;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 0.08rem 0.4rem;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.02);
+  color: var(--muted);
+}
+
+body.light .lang-code { background: rgba(0,0,0,0.06); color: rgba(0,0,0,0.75); }
