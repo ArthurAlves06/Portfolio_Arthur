@@ -4,14 +4,21 @@ import './CertificateCard.css';
 const CertificateCard = ({ title, issuer, date, skills = [], certificateImage, link }) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
+  const toggle = (e) => {
+    // evitar scroll ao pressionar Space
+    if (e?.type === 'keydown' && e.code === 'Space') e.preventDefault();
+    setIsFlipped(prev => !prev);
+  };
+
   return (
     <div className="certificate-wrapper">
       <div
         className={`certificate-card ${isFlipped ? 'flipped' : ''}`}
-        onClick={() => setIsFlipped(!isFlipped)}
+        onClick={toggle}
         role="button"
         tabIndex={0}
-        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setIsFlipped(!isFlipped); }}
+        aria-pressed={isFlipped}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.code === 'Space') toggle(e); }}
       >
         <div className="certificate-front">
           <div className="certificate-image">

@@ -2,7 +2,8 @@
   /* Cores principais */
   --bg: #000;
   --surface: #0f0f11;
-  --card-bg: #ffffff;
+  /* tornar cor do cartão consistente com surface por padrão (evita flash branco) */
+  --card-bg: var(--surface);
   --text: #ffffff;
   --muted: #bdbdbd;
   --primary: #1f34bc; /* rgb(31,52,188) */
