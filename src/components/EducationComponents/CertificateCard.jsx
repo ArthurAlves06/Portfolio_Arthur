@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import './CertificateCard.css';
+import { useTranslation } from 'react-i18next';
 
 const CertificateCard = ({ title, issuer, date, skills = [], certificateImage, link }) => {
   const [isFlipped, setIsFlipped] = useState(false);
+  const { t } = useTranslation();
 
   const toggle = (e) => {
     // evitar scroll ao pressionar Space
@@ -35,12 +37,12 @@ const CertificateCard = ({ title, issuer, date, skills = [], certificateImage, l
             <h3>{title}</h3>
             <p className="issuer">{issuer}</p>
             <p className="date">{date}</p>
-            <p className="tap-hint">Clique para ver o conteúdo</p>
+            <p className="tap-hint">{t('certificate.tapHintFront')}</p>
           </div>
         </div>
 
         <div className="certificate-back">
-          <h3>O que aprendi</h3>
+          <h3>{t('certificate.learned')}</h3>
           <ul className="skills-list">
             {skills.map((skill, index) => (
               <li key={index}>{skill}</li>
@@ -48,10 +50,10 @@ const CertificateCard = ({ title, issuer, date, skills = [], certificateImage, l
           </ul>
           {link && (
             <a href={link} target="_blank" rel="noopener noreferrer" className="certificate-link">
-              Ver Certificado
+              {t('certificate.viewCertificate')}
             </a>
           )}
-          <p className="tap-hint">Clique para voltar</p>
+          <p className="tap-hint">{t('certificate.tapHintBack')}</p>
         </div>
       </div>
     </div>

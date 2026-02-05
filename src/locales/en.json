@@ -1,0 +1,55 @@
+{
+  "header": {
+    "home": "Home",
+    "skills": "Skills",
+    "education": "Education",
+    "contact": "Contact"
+  },
+  "hero": {
+    "hello": "Hello, it's",
+    "typing": "I'm a",
+    "paragraph": "Passionate about technology and currently work with embedded systems, where I started as an intern and was later hired full-time. I am pursuing a Software Engineering degree (4th semester).",
+    "hire": "Hire me"
+  },
+  "footer": {
+    "copyright": "Copyright © 2025 by Arthur | All Rights Reserved."
+  }
+  ,
+  "skills": {
+    "heading": "My Skills",
+    "sub": "A snapshot of the technologies and languages I work with on a daily basis.",
+    "group1": { "title": "Core Skills" },
+    "group2": { "title": "Tools" }
+  },
+  "education": {
+    "heading": "My Journey",
+    "title": "Education",
+    "certificatesTitle": "Certificates"
+  },
+  "contact": {
+    "heading": "Contact Me!",
+    "intro": "Let's Work Together",
+    "introDesc": "I'm currently open to new opportunities. Reach out and I'll get back to you!",
+    "email": "Email",
+    "phone": "Phone",
+    "locationSmall": "Curitiba PR",
+    "locationDesc": "Brazil (Open to Remote)",
+    "form": {
+      "labelName": "Name",
+      "placeholderName": "Full Name",
+      "labelEmail": "Email",
+      "placeholderEmail": "Email Address",
+      "labelSubject": "Subject",
+      "placeholderSubject": "Email Subject",
+      "labelMessage": "Message",
+      "placeholderMessage": "Your Message",
+      "submit": "Send Message"
+    }
+  },
+  "certificate": {
+    "tapHintFront": "Click to view details",
+    "learned": "What I learned",
+    "viewCertificate": "View Certificate",
+    "tapHintBack": "Click to go back"
+  }
+}

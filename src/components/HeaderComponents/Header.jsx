@@ -3,6 +3,7 @@ import './HeaderStyle.css';
 import { useTheme } from '../../contexts/ThemeContext.jsx';
 import { FiMoon, FiSun } from 'react-icons/fi';
 import { IoLanguage } from 'react-icons/io5';
+import { useTranslation } from 'react-i18next';
 
 const Header = () => {
   const [active, setActive] = useState('home');
@@ -11,27 +12,7 @@ const Header = () => {
   const lastY = useRef(0);
   const { theme, toggleTheme } = useTheme();
 
-  // language state (persist)
-  const [lang, setLang] = useState(() => localStorage.getItem('lang') || 'EN');
-  useEffect(() => {
-    localStorage.setItem('lang', lang);
-  }, [lang]);
-
-  // simple labels map — expand as needed for other components
-  const labels = {
-    EN: {
-      home: 'Home',
-      skills: 'Skills',
-      education: 'Education',
-      contact: 'Contact'
-    },
-    PT: {
-      home: 'Início',
-      skills: 'Habilidades',
-      education: 'Educação',
-      contact: 'Contato'
-    }
-  };
+  const { t, i18n } = useTranslation();
 
   useEffect(() => {
     const ids = ['home', 'skills', 'education', 'contact'];
@@ -80,22 +61,26 @@ const Header = () => {
         <div className="logo">Arthur.</div>
 
         <nav>
-          <a href="#home" className={active === 'home' ? 'active' : ''}>{labels[lang].home}</a>
-          <a href="#skills" className={active === 'skills' ? 'active' : ''}>{labels[lang].skills}</a>
-          <a href="#education" className={active === 'education' ? 'active' : ''}>{labels[lang].education}</a>
-          <a href="#contact" className={active === 'contact' ? 'active' : ''}>{labels[lang].contact}</a>
+          <a href="#home" className={active === 'home' ? 'active' : ''}>{t('header.home')}</a>
+          <a href="#skills" className={active === 'skills' ? 'active' : ''}>{t('header.skills')}</a>
+          <a href="#education" className={active === 'education' ? 'active' : ''}>{t('header.education')}</a>
+          <a href="#contact" className={active === 'contact' ? 'active' : ''}>{t('header.contact')}</a>
         </nav>
 
         {/* Right-side controls: language + theme */}
         <div className="header-controls" role="group" aria-label="Header controls">
           <button
             className="lang-icon"
-            onClick={() => setLang(prev => (prev === 'EN' ? 'PT' : 'EN'))}
-            title={lang === 'EN' ? 'Switch to Português' : 'Switch to English'}
+            onClick={() => {
+              const next = i18n.language === 'en' ? 'pt' : 'en';
+              i18n.changeLanguage(next);
+              localStorage.setItem('lang', next);
+            }}
+            title={i18n.language === 'en' ? 'Switch to Português' : 'Switch to English'}
             aria-label="Toggle language"
           >
             <IoLanguage size={18} />
-            <span className="lang-code">{lang}</span>
+            <span className="lang-code">{i18n.language.toUpperCase()}</span>
           </button>
 
           <button className="theme-btn" onClick={toggleTheme} aria-label="Toggle theme">

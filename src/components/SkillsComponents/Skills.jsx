@@ -2,6 +2,7 @@ import React from 'react';
 import './SkillsStyle.css';
 import { FaReact, FaJsSquare, FaHtml5, FaCss3Alt, FaJava, FaGithub, FaMicrochip, FaCode } from 'react-icons/fa';
 import { RiToolsFill } from 'react-icons/ri';
+import { useTranslation } from 'react-i18next';
 
 const SkillGroup = ({ icon, title, items }) => (
   <div className="skill-group">
@@ -16,6 +17,7 @@ const SkillGroup = ({ icon, title, items }) => (
 );
 
 const Skills = () => {
+  const { t } = useTranslation();
   const groups = [
     {
       title: 'Minhas Skills',
@@ -40,11 +42,11 @@ const Skills = () => {
 
   return (
     <section className="skills" id="skills">
-      <h2 className="heading">My <span>Skills</span></h2>
-      <p className="skills-sub">A snapshot of the technologies and languages I work with on a daily basis.</p>
+      <h2 className="heading">{t('skills.heading').split(' ')[0]} <span>{t('skills.heading').split(' ').slice(1).join(' ')}</span></h2>
+      <p className="skills-sub">{t('skills.sub')}</p>
 
       <div className="skills-container">
-        {groups.map((g, idx) => <SkillGroup key={idx} {...g} />)}
+        {groups.map((g, idx) => <SkillGroup key={idx} {...g} title={t(`skills.group${idx+1}.title`) || g.title} />)}
       </div>
     </section>
   );

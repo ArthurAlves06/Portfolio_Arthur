@@ -1,26 +1,26 @@
 import React from 'react';
 import './ContactStyle.css';
 import { FiMail, FiPhone, FiMapPin } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 
 const Contact = () => {
+  const { t } = useTranslation();
   return (
     <section className="contact" id="contact">
       <h2 className="heading">
-        Contact <span>Me!</span>
+        {t('contact.heading').split(' ')[0]} <span>{t('contact.heading').split(' ').slice(1).join(' ')}</span>
       </h2>
 
       <div className="contact-grid">
         <div className="contact-left">
-          <h3 className="contact-intro">Let's Work Together</h3>
-          <p className="contact-intro-desc">
-            I'm currently open to new opportunities. Reach out and I'll get back to you!
-          </p>
+          <h3 className="contact-intro">{t('contact.intro')}</h3>
+          <p className="contact-intro-desc">{t('contact.introDesc')}</p>
 
           <div className="footer-contacts">
             <a className="footer-contact-item" href="mailto:arthurdesouzaalves06@gmail.com">
               <span className="icon"><FiMail /></span>
               <div className="meta">
-                <small>Email</small>
+                <small>{t('contact.email')}</small>
                 <span>arthurdesouzaalves06@gmail.com</span>
               </div>
             </a>
@@ -28,7 +28,7 @@ const Contact = () => {
             <a className="footer-contact-item" href="tel:+5541988337710">
               <span className="icon"><FiPhone /></span>
               <div className="meta">
-                <small>Phone</small>
+                <small>{t('contact.phone')}</small>
                 <span>(41) 98833-7710</span>
               </div>
             </a>
@@ -36,8 +36,8 @@ const Contact = () => {
             <div className="footer-contact-item">
               <span className="icon"><FiMapPin /></span>
               <div className="meta">
-                <small>Curitiba PR</small>
-                <span>Brazil (Open to Remote)</span>
+                <small>{t('contact.locationSmall')}</small>
+                <span>{t('contact.locationDesc')}</span>
               </div>
             </div>
           </div>
@@ -47,28 +47,28 @@ const Contact = () => {
           <form className="contact-form" action="#">
             <div className="input-row">
               <div className="input-group">
-                <label>Name</label>
-                <input type="text" placeholder="Full Name" required />
+                <label>{t('contact.form.labelName')}</label>
+                <input type="text" placeholder={t('contact.form.placeholderName')} required />
               </div>
               <div className="input-group">
-                <label>Email</label>
-                <input type="email" placeholder="Email Address" required />
+                <label>{t('contact.form.labelEmail')}</label>
+                <input type="email" placeholder={t('contact.form.placeholderEmail')} required />
               </div>
             </div>
 
             <div className="input-row">
               <div className="input-group full">
-                <label>Subject</label>
-                <input type="text" placeholder="Email Subject" required />
+                <label>{t('contact.form.labelSubject')}</label>
+                <input type="text" placeholder={t('contact.form.placeholderSubject')} required />
               </div>
             </div>
 
             <div className="input-group">
-              <label>Message</label>
-              <textarea name="message" cols="30" rows="7" placeholder="Your Message" required></textarea>
+              <label>{t('contact.form.labelMessage')}</label>
+              <textarea name="message" cols="30" rows="7" placeholder={t('contact.form.placeholderMessage')} required></textarea>
             </div>
 
-            <input type="submit" value="Send Message" className="btn" />
+            <input type="submit" value={t('contact.form.submit')} className="btn" />
           </form>
         </div>
       </div>

@@ -1,0 +1,55 @@
+{
+  "header": {
+    "home": "Início",
+    "skills": "Habilidades",
+    "education": "Educação",
+    "contact": "Contato"
+  },
+  "hero": {
+    "hello": "Olá, eu sou",
+    "typing": "Sou",
+    "paragraph": "Apaixonado por tecnologia e atualmente trabalho com sistemas embarcados, onde comecei como estagiário e depois fui contratado. Estou cursando Engenharia de Software (4º período).",
+    "hire": "Contrate-me"
+  },
+  "footer": {
+    "copyright": "Copyright © 2025 por Arthur | Todos os direitos reservados."
+  }
+  ,
+  "skills": {
+    "heading": "Minhas Skills",
+    "sub": "Um resumo das tecnologias e linguagens com as quais trabalho diariamente.",
+    "group1": { "title": "Habilidades" },
+    "group2": { "title": "Ferramentas" }
+  },
+  "education": {
+    "heading": "Minha Jornada",
+    "title": "Educação",
+    "certificatesTitle": "Certificados"
+  },
+  "contact": {
+    "heading": "Contato",
+    "intro": "Vamos trabalhar juntos",
+    "introDesc": "Estou aberto a novas oportunidades. Entre em contato e responderei!",
+    "email": "Email",
+    "phone": "Telefone",
+    "locationSmall": "Curitiba PR",
+    "locationDesc": "Brasil (Aberto a trabalho remoto)",
+    "form": {
+      "labelName": "Nome",
+      "placeholderName": "Nome completo",
+      "labelEmail": "Email",
+      "placeholderEmail": "Endereço de email",
+      "labelSubject": "Assunto",
+      "placeholderSubject": "Assunto do email",
+      "labelMessage": "Mensagem",
+      "placeholderMessage": "Sua mensagem",
+      "submit": "Enviar Mensagem"
+    }
+  },
+  "certificate": {
+    "tapHintFront": "Clique para ver o conteúdo",
+    "learned": "O que aprendi",
+    "viewCertificate": "Ver Certificado",
+    "tapHintBack": "Clique para voltar"
+  }
+}

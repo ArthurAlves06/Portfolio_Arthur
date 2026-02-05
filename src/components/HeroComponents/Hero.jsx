@@ -3,18 +3,21 @@ import './HeroStyle.css';
 import ArthurImage from '../../assets/Arthur.jpg'; 
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import { FiMail } from 'react-icons/fi';
+import { useTranslation } from 'react-i18next';
 
 const Hero = () => {
+  const { t } = useTranslation();
+
   return (
     <section className="home" id="home">
       <div className="home-img">
         <img src={ArthurImage} alt="Foto de Arthur" />
       </div>
       <div className="home-content">
-        <h1>Hello, it's <span>Arthur</span></h1>
-        <h3 className="typing-text">I'm a <span></span></h3>
+        <h1>{t('hero.hello')} <span>Arthur</span></h1>
+        <h3 className="typing-text">{t('hero.typing')} <span></span></h3>
         <p>
-          Passionate about technology and currently work with embedded systems, where I started as an intern and was later hired full-time. I am pursuing a Software Engineering degree (4th semester).
+          {t('hero.paragraph')}
         </p>
         <div className="social-icons">
           <a href="https://github.com/ArthurAlves06" target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="social-btn">
@@ -27,7 +30,7 @@ const Hero = () => {
             <FiMail size={20} />
           </a>
         </div>
-        <a href="#" className="btn">Hire me</a>
+        <a href="#" className="btn">{t('hero.hire')}</a>
       </div>
     </section>
   );

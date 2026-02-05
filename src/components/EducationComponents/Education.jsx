@@ -1,6 +1,7 @@
 import React from 'react';
 import './EducationStyle.css';
 import CertificateCard from './CertificateCard';
+import { useTranslation } from 'react-i18next';
 
 const EducationItem = ({ date, title, institution, description }) => (
   <div className="education-item">
@@ -14,6 +15,7 @@ const EducationItem = ({ date, title, institution, description }) => (
 );
 
 const Education = () => {
+  const { t } = useTranslation();
   const certificates = [
     {
       title: 'React: hooks, context, performance',
@@ -62,12 +64,12 @@ const Education = () => {
   return (
     <section className="education" id="education">
       <h2 className="heading">
-        My <span>Journey</span>
+        {t('education.heading').split(' ')[0]} <span>{t('education.heading').split(' ').slice(1).join(' ')}</span>
       </h2>
 
       <div className="education-row">
         <div className="education-column">
-          <h3 className="title">Education</h3>
+          <h3 className="title">{t('education.title')}</h3>
 
           <div className="education-box">
             <EducationItem
@@ -89,7 +91,7 @@ const Education = () => {
 
       {/* Nova Seção de Certificados */}
       <div className="certificates-section">
-        <h3 className="certificates-title">Certificates</h3>
+        <h3 className="certificates-title">{t('education.certificatesTitle')}</h3>
         <div className="certificates-grid">
           {certificates.map((cert, idx) => (
             <CertificateCard key={idx} {...cert} />
