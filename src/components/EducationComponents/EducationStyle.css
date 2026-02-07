@@ -129,18 +129,29 @@
 }
 
 @media (max-width: 1024px) {
+  .education {
+    padding: var(--pad-section) 5% 4rem;
+  }
+  
   .certificates-grid {
-    grid-template-columns: repeat(2, 1fr);
+    /* Ajusta o grid para caber 2 cards em tablets ou 1 em celulares */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    justify-items: center; /* Centraliza os cards se sobrar espaço */
+    gap: 2rem;
   }
 }
 
-@media (max-width: 768px) {
-  .certificates-grid {
-    grid-template-columns: 1fr;
-    gap: 1.6rem;
+@media (max-width: 700px) {
+  .heading {
+    font-size: 2.4rem;
+  }
+
+  .education-box {
+    grid-template-columns: 1fr; /* Garante coluna única na formação */
   }
 
   .certificates-title {
     font-size: 1.8rem;
+    text-align: center;
   }
 }

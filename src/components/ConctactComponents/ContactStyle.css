@@ -57,21 +57,25 @@
   margin-top: 2.4rem;
   border-top: 1px solid rgba(255,255,255,0.03);
 }
+/* No corpo do CSS (fora das media queries) */
 .contact-footer-inner {
   max-width: 1100px;
   margin: 0 auto;
   display: grid;
-  grid-template-columns: 1fr 420px;
+  /* Mudamos para minmax para o lado direito encolher se a tela for menor que 420px */
+  grid-template-columns: 1fr minmax(200px, 420px); 
   gap: 2rem;
   align-items: center;
 }
-.contact-footer-inner .footer-left h3 {
-  font-size: 2.4rem;
-  margin: 0 0 .6rem 0;
-}
-.contact-footer-inner .footer-left p {
-  color: var(--muted);
-  margin: 0;
+
+/* Adicione isso dentro da sua media query de @media (max-width: 1024px) */
+@media (max-width: 1024px) {
+  /* ... outros códigos que você já tem ... */
+
+  .contact-footer-inner {
+    grid-template-columns: 1fr; /* Empilha o rodapé de contatos também */
+    text-align: center;
+  }
 }
 .footer-contacts {
   display: flex;
@@ -175,29 +179,64 @@
 .input-row .input-group.full { flex-basis: 100%; }
 
 /* Ajustes responsivos */
-@media (max-width: 980px) {
-  .contact-grid {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-  }
-  .contact-right .contact-form { padding: 1.6rem; }
-  .input-row { flex-direction: column; }
-}
+/* --- SUBSTITUA A PARTIR DAQUI NO SEU CONTACTSTYLE.CSS --- */
 
-@media (max-width: 900px) {
-  .contact-footer-inner {
-    grid-template-columns: 1fr;
-    text-align: left;
+/* Ajustes responsivos otimizados */
+@media (max-width: 1024px) {
+  .contact-grid {
+    grid-template-columns: 1fr; /* Empilha as informações e o formulário */
+    gap: 3rem;
   }
+
+  .contact-left .contact-intro {
+    font-size: clamp(2.4rem, 5vw, 3.2rem); /* Título fluido */
+    text-align: center;
+  }
+
+  .contact-left .contact-intro-desc {
+    margin: 0 auto 2.4rem;
+    text-align: center;
+  }
+  
   .footer-contacts {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 0.8rem;
+    align-items: center; /* Centraliza os itens de contato no tablet/mobile */
   }
-  .footer-contact-item { flex: 1 1 calc(50% - 0.8rem); }
 }
 
 @media (max-width: 700px) {
-  .contact { padding: calc(var(--pad-section) / 2) 5%; }
-  .contact .heading { font-size: 2.4rem; }
+  .contact { 
+    /* Usa a variável de padding que ajustamos para ser responsiva */
+    padding: var(--pad-section) 5%; 
+  }
+  
+  .contact .heading { 
+    font-size: 2.4rem; 
+    text-align: center;
+  }
+
+  .contact-right .contact-form { 
+    padding: 1.5rem; /* Reduz o preenchimento interno para ganhar tela */
+  }
+
+  /* Faz as linhas de inputs (como Nome e Email) ficarem uma embaixo da outra */
+  .input-row { 
+    flex-direction: column; 
+    gap: 0;
+  }
+
+  /* Ajusta os itens de contato para ocupar melhor o espaço e facilitar o clique */
+  .footer-contact-item {
+    width: 100%;
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  /* Garante que o botão de enviar ocupe a largura total para facilitar o toque */
+  .contact .btn {
+    width: 100%;
+    padding: 1.2rem;
+  }
 }

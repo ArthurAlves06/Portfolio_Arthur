@@ -1,27 +1,16 @@
 :root {
-  /* Cores principais */
-  --bg: #000;
-  --surface: #0f0f11;
-  /* tornar cor do cartão consistente com surface por padrão (evita flash branco) */
-  --card-bg: var(--surface);
-  --text: #ffffff;
-  --muted: #bdbdbd;
-  --primary: #1f34bc; /* rgb(31,52,188) */
-  --accent: #2a6df6;
+  /* ... cores mantidas ... */
 
-  /* Sombreamento / bordas */
-  --border-weak: rgba(31,52,188,0.06);
-  --border-strong: rgba(31,52,188,0.12);
-
-  /* Espaçamentos / tipografia */
-  --pad-section: 6rem;
+  /* Espaçamentos / tipografia REVISADOS */
+  /* O padding da seção varia entre 3rem (mobile) e 6rem (desktop) */
+  --pad-section: clamp(3rem, 8vw, 6rem); 
+  
   --radius: 12px;
-  --heading-size: 3.2rem;
 
-  /* Header (padrões para tema escuro) */
-  --header-bg: rgba(0,0,0,0.55);
-  --header-border: rgba(255,255,255,0.06);
-  --header-text: rgba(255,255,255,0.95);
+  /* O título varia entre 2.4rem e 3.2rem dependendo da largura da tela */
+  --heading-size: clamp(2.4rem, 5vw, 3.2rem); 
+
+  /* ... restante das variáveis ... */
 }
 
 /* Tema escuro "mais claro" (preto menos intenso) */

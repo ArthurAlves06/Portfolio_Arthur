@@ -33,10 +33,10 @@ header.hidden.scrolled {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 2.4rem;
-  position: static; /* alterado: antes era relative */
+  /* Usamos clamp para o gap ser fluido entre 0.8rem e 2.4rem */
+  gap: clamp(0.8rem, 2vw, 2.4rem); 
+  padding: 0 5%; /* Margem de segurança nas laterais */
 }
-
 /* Empurra os links para a posição desejada (ajuste o valor) */
 /* Nota: há outra regra `header nav` mais abaixo — mantive o transform nessa seção mais abaixo para evitar duplicação/confusão */
 
@@ -219,36 +219,51 @@ header.nav-only nav {
 }
 
 /* responsivo: reduzir deslocamento e reorganizar */
+/* Quando a tela começa a apertar (Tablets) */
 @media (max-width: 900px) {
-  header nav { padding-right: 5rem; }
-  .header-controls { right: 3%; }
+  .logo {
+    left: 5%; /* Aproxima o logo da borda */
+    font-size: 2.2rem; /* Encolhe o texto do logo */
+  }
+
+  header nav {
+    padding-right: 0; /* Remove o recuo grande que você tinha */
+    gap: 1.2rem; /* Links mais próximos */
+  }
+
+  .header-controls {
+    right: 4%;
+  }
 }
+
+/* Telas Pequenas (Mobile) */
 @media (max-width: 600px) {
-  .header-controls { display: none; } /* esconder em telas muito pequenas */
+  /* Escondemos o Logo para dar espaço total aos links e botões */
+  .logo {
+    display: none; 
+  }
+
+  header nav a {
+    font-size: 1.4rem; /* Diminui um pouco a fonte dos links */
+  }
+
+  /* Em vez de esconder os controles, vamos apenas encolhê-los */
+  .header-controls::before {
+    display: none; /* Remove a barra divisória para ganhar espaço */
+  }
+  
+  .lang-code {
+    display: none; /* Esconde o texto "PT/EN" e deixa só o ícone do globo */
+  }
 }
 
-/* Single language icon button */
-.lang-icon {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  background: transparent;
-  border: none;
-  color: var(--muted);
-  cursor: pointer;
-  padding: 0.25rem 0.5rem;
-  border-radius: 6px;
-  font-size: 1.1rem;
+/* Telas muito pequenas (iPhone SE / Fold) */
+@media (max-width: 380px) {
+  header nav {
+    gap: 0.8rem;
+  }
+  
+  header nav a {
+    font-size: 1.2rem;
+  }
 }
-.lang-icon:hover { background: rgba(255,255,255,0.02); color: var(--text); }
-.lang-code {
-  display: inline-block;
-  font-size: 0.85rem;
-  font-weight: 700;
-  padding: 0.08rem 0.4rem;
-  border-radius: 4px;
-  background: rgba(255,255,255,0.02);
-  color: var(--muted);
-}
-
-body.light .lang-code { background: rgba(0,0,0,0.06); color: rgba(0,0,0,0.75); }
