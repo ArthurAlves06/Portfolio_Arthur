@@ -9,6 +9,16 @@ const CertificateCard = ({ title, issuer, date, skills = [], certificateImage, l
   const toggle = (e) => {
     // evitar scroll ao pressionar Space
     if (e?.type === 'keydown' && e.code === 'Space') e.preventDefault();
+
+    // if the parent carousel was just used for dragging, ignore click
+    try {
+      const vp = e?.currentTarget?.closest?.('.carousel-viewport');
+      if (vp && vp.dataset.dragging === 'true') {
+        // ignore this click which resulted from a drag
+        return;
+      }
+    } catch {}
+
     setIsFlipped(prev => !prev);
   };
 

@@ -118,3 +118,39 @@
   }
   .heading { font-size: 2.2rem; }
 }
+
+/* ===== Ajustes de responsividade para os cards de skills ===== */
+@media (max-width: 1000px) {
+  .skill-group {
+    max-width: 100%;      /* permite o card crescer/encolher com a coluna */
+    padding: 1.6rem;      /* menos padding em telas médias */
+    min-height: 180px;    /* reduz altura mínima */
+  }
+
+  .group-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .group-title { font-size: 1.45rem; }
+  .group-list { font-size: 1.35rem; }
+}
+
+@media (max-width: 600px) {
+  .skill-group {
+    padding: 1.2rem;
+    min-height: auto;
+    box-shadow: 0 10px 30px rgba(2,6,23,0.45);
+    border-radius: 12px;
+  }
+
+  .skill-group:hover { transform: none; box-shadow: 0 12px 30px rgba(2,6,23,0.25); }
+
+  .group-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .group-title { font-size: 1.35rem; }
+  .group-list { font-size: 1.25rem; padding-left: 1rem; }
+}

@@ -1,8 +1,14 @@
 .certificate-wrapper {
   perspective: 1000px;
   width: 100%;
-  max-width: 360px;
-  height: 420px;
+  max-width: 400px;
+  height: 500px;
+  /* manter wrapper sem padding para que o cartão interno ocupe o espaço corretamente */
+  padding: 0;
+  box-sizing: border-box;
+  display: inline-block;
+  background: transparent;
+  overflow: visible;
 }
 
 .certificate-card {
@@ -26,7 +32,8 @@
 
 /* flip the whole card (outer element) so it behaves like before */
 .certificate-card.flipped {
-  transform: rotateY(180deg);
+  transform: rotateY(180deg) translateY(-8px);
+  z-index: 12;
 }
 
 .certificate-front,
@@ -41,8 +48,9 @@
   padding: 1.6rem;
   border-radius: 14px;
   background: var(--card-bg, var(--surface));
-  border: 1px solid var(--border-weak);
-  box-shadow: 0 18px 50px rgba(2, 6, 23, 0.6);
+  border: none;
+  /* subtle resting shadow to avoid heavy gray backdrop between cards */
+  box-shadow: 0 8px 20px rgba(2, 6, 23, 0.04);
 }
 
 .certificate-front {
@@ -111,6 +119,29 @@
   text-align: center;
   overflow-y: auto;
   padding: 2rem;
+}
+
+/* Styled scrollbar for the skills list (the vertical scroll inside the back of card) */
+.certificate-back .skills-list {
+  scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+  -ms-overflow-style: auto;
+}
+
+.certificate-back .skills-list::-webkit-scrollbar {
+  width: 10px;
+}
+.certificate-back .skills-list::-webkit-scrollbar-track {
+  background: var(--scroll-track);
+  border-radius: 8px;
+}
+.certificate-back .skills-list::-webkit-scrollbar-thumb {
+  background-color: var(--scroll-thumb);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+.certificate-back .skills-list::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scroll-thumb-hover);
 }
 
 /* control pointer events so back is interactive only when flipped */
@@ -206,7 +237,16 @@
 .certificate-card:hover {
   /* avoid transform on hover to prevent conflicts with flip */
   border-color: rgba(31, 52, 188, 0.9);
-  box-shadow: 0 18px 50px rgba(2, 6, 23, 0.2), 0 0 18px rgba(31, 52, 188, 0.18);
+  /* slightly stronger bluish hover shadow for affordance */
+  box-shadow: 0 14px 36px rgba(31,52,188,0.12);
+  z-index: 12;
+}
+
+/* bring flipped/hovered card above neighbors so it doesn't look clipped */
+.certificate-card,
+.certificate-card.flipped,
+.certificate-card:hover {
+  z-index: 3;
 }
 
 .certificate-card:focus {
@@ -216,8 +256,8 @@
 
 @media (max-width: 768px) {
   .certificate-wrapper {
-    max-width: 320px;
-    height: 380px;
+    max-width: none;
+    height: 460px;
   }
 
   .certificate-front,

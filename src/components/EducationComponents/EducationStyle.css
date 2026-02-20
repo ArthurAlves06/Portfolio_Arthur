@@ -128,6 +128,91 @@
   justify-items: center;
 }
 
+/* Carousel styles */
+.certificates-carousel {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Remove any container background/box used previously so cards appear standalone */
+.certificates-carousel,
+.carousel-viewport,
+.carousel-track {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+.carousel-viewport {
+  overflow-x: auto;
+  overflow-y: hidden; /* avoid vertical scrollbar */
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  scroll-snap-type: x mandatory;
+  background: transparent; /* remove any background behind cards */
+  box-shadow: none;
+  padding: 0;
+}
+
+
+.carousel-track {
+  display: flex;
+  gap: 2rem;
+  padding: 0; /* no extra bg/padding behind cards */
+  align-items: stretch;
+  min-width: max-content; /* ensure track width is content-based so centering works */
+}
+
+.carousel-track > * {
+  flex: 0 0 380px; /* increased card width */
+  scroll-snap-align: center;
+}
+
+.carousel-btn {
+  background: var(--carousel-btn-bg);
+  border: 1px solid var(--carousel-btn-border);
+  color: var(--carousel-btn-color);
+  width: 56px;
+  height: 56px;
+  border-radius: 50%; /* round */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 10px 40px rgba(2,6,23,0.08);
+  transition: background-color 180ms ease, transform 160ms ease, box-shadow 180ms ease;
+}
+
+.carousel-btn:hover {
+  transform: translateY(-3px);
+  background: var(--carousel-btn-bg-hover);
+  color: var(--bg);
+  box-shadow: 0 10px 40px rgba(31,52,188,0.18);
+}
+
+.carousel-btn .icon { display: inline-flex; align-items:center; justify-content:center; }
+.carousel-btn svg { width: 18px; height: 18px; color: var(--carousel-btn-icon-color); }
+.carousel-btn:hover svg { color: var(--bg); }
+.carousel-btn.left .icon { transform: translateX(-1px); }
+.carousel-btn.right .icon { transform: translateX(1px); }
+
+/* hide scrollbars */
+.carousel-viewport::-webkit-scrollbar { display: none; }
+.carousel-viewport { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* hide buttons on small screens (touch users drag) */
+@media (max-width: 700px) {
+  .carousel-btn { display: none; }
+  .carousel-track > * { flex: 0 0 86%; }
+}
+
 @media (max-width: 1024px) {
   .education {
     padding: var(--pad-section) 5% 4rem;
