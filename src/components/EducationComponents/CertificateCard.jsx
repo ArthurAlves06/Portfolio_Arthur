@@ -6,6 +6,10 @@ const CertificateCard = ({ title, issuer, date, skills = [], certificateImage, l
   const [isFlipped, setIsFlipped] = useState(false);
   const { t } = useTranslation();
 
+  const maxVisible = 4;
+  const visibleSkills = skills.slice(0, maxVisible);
+  const extraCount = skills.length > maxVisible ? skills.length - maxVisible : 0;
+
   const toggle = (e) => {
     // evitar scroll ao pressionar Space
     if (e?.type === 'keydown' && e.code === 'Space') e.preventDefault();
@@ -54,9 +58,12 @@ const CertificateCard = ({ title, issuer, date, skills = [], certificateImage, l
         <div className="certificate-back">
           <h3>{t('certificate.learned')}</h3>
           <ul className="skills-list">
-            {skills.map((skill, index) => (
+            {visibleSkills.map((skill, index) => (
               <li key={index}>{skill}</li>
             ))}
+            {extraCount > 0 && (
+              <li className="more-skills">+{extraCount} mais</li>
+            )}
           </ul>
           {link && (
             <a href={link} target="_blank" rel="noopener noreferrer" className="certificate-link">

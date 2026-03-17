@@ -151,7 +151,7 @@
 
 .carousel-viewport {
   overflow-x: auto;
-  overflow-y: hidden; /* avoid vertical scrollbar */
+  overflow-y: visible; /* allow card backs or tall images to overflow vertically */
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
   width: 100%;
@@ -171,7 +171,7 @@
 }
 
 .carousel-track > * {
-  flex: 0 0 380px; /* increased card width */
+  flex: 0 0 auto; /* let card width be driven by its own max-width */
   scroll-snap-align: center;
 }
 

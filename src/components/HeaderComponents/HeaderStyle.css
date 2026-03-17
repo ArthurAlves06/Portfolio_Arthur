@@ -33,9 +33,8 @@ header.hidden.scrolled {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* Usamos clamp para o gap ser fluido entre 0.8rem e 2.4rem */
-  gap: clamp(0.8rem, 2vw, 2.4rem); 
-  padding: 0 5%; /* Margem de segurança nas laterais */
+  gap: clamp(0.8rem, 2vw, 2.4rem);
+  padding: 0 5%;
 }
 /* Empurra os links para a posição desejada (ajuste o valor) */
 /* Nota: há outra regra `header nav` mais abaixo — mantive o transform nessa seção mais abaixo para evitar duplicação/confusão */
@@ -226,13 +225,19 @@ header.nav-only nav {
     font-size: 2.2rem; /* Encolhe o texto do logo */
   }
 
+  /* On narrower screens switch to space-between layout so controls and logo don't overlap nav */
+  .header-inner { justify-content: space-between; }
   header nav {
     padding-right: 0; /* Remove o recuo grande que você tinha */
     gap: 1.2rem; /* Links mais próximos */
+    margin-left: 0;
   }
 
   .header-controls {
-    right: 4%;
+    position: static;
+    right: auto;
+    top: auto;
+    transform: none;
   }
 }
 
@@ -244,7 +249,8 @@ header.nav-only nav {
   }
 
   header nav a {
-    font-size: 1.4rem; /* Diminui um pouco a fonte dos links */
+    font-size: 1.2rem; /* Diminui um pouco a fonte dos links no mobile */
+    padding-bottom: .25rem;
   }
 
   /* Em vez de esconder os controles, vamos apenas encolhê-los */
@@ -260,10 +266,16 @@ header.nav-only nav {
 /* Telas muito pequenas (iPhone SE / Fold) */
 @media (max-width: 380px) {
   header nav {
-    gap: 0.8rem;
+    gap: 0.6rem;
   }
   
   header nav a {
-    font-size: 1.2rem;
+    font-size: 1rem;
   }
+}
+
+/* additional small-screen tweak to keep nav compact */
+@media (max-width: 480px) {
+  header nav { gap: 0.7rem; }
+  header nav a { font-size: 1.05rem; }
 }
