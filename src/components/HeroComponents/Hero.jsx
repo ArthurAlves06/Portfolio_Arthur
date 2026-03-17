@@ -4,6 +4,7 @@ import ArthurImage from '../../assets/Arthur.jpg';
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import { FiMail } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
+import TypewriterChange from './TypewriterChange';
 
 const Hero = () => {
   const { t } = useTranslation();
@@ -11,11 +12,11 @@ const Hero = () => {
   return (
     <section className="home" id="home">
       <div className="home-img">
-        <img src={ArthurImage} alt="Foto de Arthur" />
+        <img src={ArthurImage} alt="Minha foto" />
       </div>
       <div className="home-content">
         <h1>{t('hero.hello')} <span>Arthur</span></h1>
-        <h3 className="typing-text">{t('hero.typing')} <span></span></h3>
+        <h3 className="typing-text">{t('hero.typing')} <span><TypewriterChange className="hero-typewriter"/></span></h3>
         <p>
           {t('hero.paragraph')}
         </p>

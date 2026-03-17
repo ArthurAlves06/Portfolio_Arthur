@@ -1,6 +1,7 @@
 {
   "header": {
     "home": "Início",
+    "projects": "Projetos",
     "skills": "Habilidades",
     "education": "Educação",
     "contact": "Contato"
@@ -25,6 +26,11 @@
     "heading": "Minha Jornada",
     "title": "Educação",
     "certificatesTitle": "Certificados"
+  },
+  "projects": {
+    "heading": "Hoje",
+    "viewLive": "Ver Online",
+    "viewCode": "Ver Código"
   },
   "contact": {
     "heading": "Contato",

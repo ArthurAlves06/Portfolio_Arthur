@@ -15,7 +15,7 @@ const Header = () => {
   const { t, i18n } = useTranslation();
 
   useEffect(() => {
-    const ids = ['home', 'skills', 'education', 'contact'];
+    const ids = ['home', 'projects', 'skills', 'education', 'contact'];
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach(e => {
@@ -62,6 +62,7 @@ const Header = () => {
 
         <nav>
           <a href="#home" className={active === 'home' ? 'active' : ''}>{t('header.home')}</a>
+          <a href="#projects" className={active === 'projects' ? 'active' : ''}>{t('header.projects')}</a>
           <a href="#skills" className={active === 'skills' ? 'active' : ''}>{t('header.skills')}</a>
           <a href="#education" className={active === 'education' ? 'active' : ''}>{t('header.education')}</a>
           <a href="#contact" className={active === 'contact' ? 'active' : ''}>{t('header.contact')}</a>

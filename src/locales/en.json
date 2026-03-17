@@ -1,6 +1,7 @@
 {
   "header": {
     "home": "Home",
+    "projects": "Projects",
     "skills": "Skills",
     "education": "Education",
     "contact": "Contact"
@@ -25,6 +26,11 @@
     "heading": "My Journey",
     "title": "Education",
     "certificatesTitle": "Certificates"
+  },
+  "projects": {
+    "heading": "Today",
+    "viewLive": "View Live",
+    "viewCode": "View Code"
   },
   "contact": {
     "heading": "Contact Me!",

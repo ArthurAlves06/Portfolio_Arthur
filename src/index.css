@@ -112,57 +112,8 @@ span {
     min-width: 280px;
 }
 
-.typing-text span {
-    position: relative;
-}
 
-.typing-text span::before {
-    content: 'Software Developer';
-    color: rgb(31, 52, 188);
-    animation: words 20s infinite;
-}
-
-.typing-text span::after {
-    content: '';
-    background-color: transparent;
-    position: absolute;
-    width: calc(100% + 8px);
-    height: 100%;
-    border-left: 3px solid var(--primary);
-    right: -8px;
-    /* agora com unidade */
-    animation: blink 0.7s steps(1) infinite;
-}
-
-@keyframes cursor {
-    to {
-        border: left 3px solid rgb(31, 52, 188);
-    }
-}
-
-@keyframes words {
-
-    0%,
-    20% {
-        content: 'Software Developer';
-    }
-
-    21%,
-    40% {
-        content: 'Software Developer';
-    }
-
-    41%,
-    60% {
-        content: 'Web Designer';
-    }
-}
-
-@keyframes blink {
-    50% {
-        opacity: 0;
-    }
-}
+.typing-text span { position: relative; }
 
 /* ===== Responsividade global e utilitários ===== */
 .container {

@@ -53,6 +53,27 @@ body.light {
     font-weight: 700;
 }
 
+/* Ensure the changing word doesn't wrap and reserve space for it */
+.home-content .typing-text { white-space: nowrap; overflow: hidden; }
+.home-content .hero-typewriter { display: inline-block; vertical-align: baseline; }
+
+@media (max-width: 880px) {
+    .home-content h3 { font-size: 2rem; white-space: normal; }
+    .home-content .hero-typewriter { min-width: 0; }
+}
+
+/* caret for typewriter text */
+.typewriter-text {
+    border-right: 2px solid var(--primary);
+    padding-right: 4px;
+    box-sizing: content-box;
+    animation: blink-caret 1s steps(1) infinite;
+}
+
+@keyframes blink-caret {
+    50% { border-color: transparent; }
+}
+
 .home-img {
     border-radius: 50%;
     width: 500px; /* ajuste conforme preferir */
