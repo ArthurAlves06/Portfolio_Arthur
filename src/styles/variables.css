@@ -13,6 +13,17 @@
   --carousel-btn-border: transparent;
   --carousel-btn-icon-color: #ffffff;
 
+  /* Theme-aware shadows for certificates/cards */
+  --card-shadow: 0 8px 18px rgba(2, 6, 23, 0.05);
+  --card-shadow-hover: 0 10px 22px rgba(31, 52, 188, 0.08);
+  --card-shadow-soft: 0 6px 14px rgba(2, 6, 23, 0.03);
+  --icon-shadow: 0 6px 16px rgba(31,52,188,0.08);
+
+  /* Primary CTA / button variables (theme-aware overrides below) */
+  --btn-bg: var(--bg);
+  --btn-text: var(--primary);
+  --btn-border: var(--primary);
+
   /* Espaçamentos / tipografia REVISADOS */
   /* O padding da seção varia entre 3rem (mobile) e 6rem (desktop) */
   --pad-section: clamp(3rem, 8vw, 6rem); 
@@ -38,6 +49,15 @@ body.dark-soft {
   --border-strong: rgba(255,255,255,0.06);
 
   /* mantém defaults acima para header */
+  /* Button specific overrides for dark theme */
+  --btn-bg: #0a0a0a;
+  --btn-text: var(--primary);
+  --btn-border: var(--primary);
+
+  --card-shadow: 0 10px 24px rgba(0, 0, 0, 0.26);
+  --card-shadow-hover: 0 14px 30px rgba(31, 52, 188, 0.16);
+  --card-shadow-soft: 0 8px 18px rgba(0, 0, 0, 0.18);
+  --icon-shadow: 0 8px 20px rgba(31,52,188,0.16);
 }
 
 /* Tema claro */
@@ -60,6 +80,15 @@ body.light {
   --carousel-btn-color: rgba(11,11,11,0.8);
   --carousel-btn-border: transparent;
   --carousel-btn-icon-color: #ffffff;
+  /* Button specific overrides for light theme */
+  --btn-bg: #ffffff;
+  --btn-text: var(--primary);
+  --btn-border: var(--primary);
+
+  --card-shadow: 0 6px 14px rgba(15, 23, 42, 0.04);
+  --card-shadow-hover: 0 8px 18px rgba(31, 52, 188, 0.06);
+  --card-shadow-soft: 0 4px 10px rgba(15, 23, 42, 0.025);
+  --icon-shadow: 0 4px 12px rgba(31,52,188,0.06);
 }
 
 /* Scroll overrides for light theme */

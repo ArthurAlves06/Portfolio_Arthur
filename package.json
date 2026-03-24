@@ -10,13 +10,14 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emailjs/browser": "^4.4.1",
     "firebase": "^12.8.0",
+    "framer-motion": "^10.12.7",
     "i18next": "^25.8.1",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-i18next": "^16.5.4",
     "react-icons": "^5.5.0",
-    "framer-motion": "^10.12.7",
     "swiper": "^12.1.0"
   },
   "devDependencies": {

@@ -21,6 +21,10 @@
   --header-bg: rgba(0,0,0,0.55);
   --header-border: rgba(255,255,255,0.06);
   --header-text: rgba(255,255,255,0.95);
+
+    /* Social button defaults (dark theme) */
+    --social-bg: rgba(255,255,255,0.02);
+    --social-border: rgba(255,255,255,0.06);
 }
 
 /* ...existing code... */
@@ -45,6 +49,10 @@ body.light {
   --header-bg: rgba(255,255,255,0.92);
   --header-border: rgba(0,0,0,0.06);
   --header-text: #0b0b0b;
+
+    /* Social button overrides for light theme */
+    --social-bg: rgba(0,0,0,0.02);
+    --social-border: rgba(0,0,0,0.06);
 }
 
 .home-content h3 {
@@ -113,6 +121,12 @@ body.light {
     transition: transform 420ms cubic-bezier(.16,.84,.24,1), filter 420ms ease, box-shadow 420ms ease;
     will-change: transform;
     transform-origin: center center;
+    /* rendering hints for smoother appearance on mobile devices */
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    image-rendering: auto;
 }
 
 /* zoom ativado ao passar sobre o container */
@@ -137,8 +151,8 @@ body.light {
     align-items: center;
     width: 4.4rem;
     height: 4.4rem;
-    background-color: rgba(255,255,255,0.02);
-    border: 1px solid rgba(255,255,255,0.06);
+    background-color: var(--social-bg);
+    border: 1px solid var(--social-border);
     font-size: 1.6rem;
     border-radius: 50%;
     transition: transform 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
@@ -166,6 +180,20 @@ body.light {
     padding-inline: 2%;
 }
 
+/* Force the primary CTA in the hero to be a filled blue button in both themes */
+.home .btn {
+    background-color: var(--primary);
+    color: #ffffff;
+    border: 2px solid var(--primary);
+}
+
+.home .btn:hover {
+    background-color: color-mix(in srgb, var(--primary) 85%, black 15%);
+    color: #ffffff;
+    box-shadow: 0 0 25px var(--primary);
+    transform: scale(1.03);
+}
+
 .home .home-content h1 {
     font-size: clamp(2.6rem, 7vw, 6rem);
     margin-bottom: 1rem;
@@ -174,11 +202,19 @@ body.light {
     line-height: 1.02;
 }
 
+.home .home-content p {
+    font-size: 1.6rem;
+    line-height: 1.72;
+    color: var(--muted);
+    max-width: 62rem;
+}
+
 /* Mobile-specific adjustments for buttons and spacing */
 @media (max-width: 480px) {
     .home { padding-inline: 4%; gap: 1.6rem; }
     .home-content { width: 100%; }
     .home-content, .home-content p { text-align: left; }
+    .home .home-content p { font-size: 1.4rem; line-height: 1.62; }
     .social-icons { justify-content: flex-start; gap: 0.8rem; }
     /* center social icons under content on very small screens */
     .home .social-icons { justify-content: center; }
@@ -186,5 +222,27 @@ body.light {
     /* Reduce CTA size on mobile */
     .btn { padding: 0.8rem 1.8rem; font-size: 1.4rem; letter-spacing: 0.12rem; }
     /* soften photo halo on mobile */
-    .home-img { box-shadow: 0 8px 28px rgba(31,52,188,0.18), 0 0 48px rgba(42,109,246,0.06); }
+    .home-img { box-shadow: 0 8px 28px rgba(31,52,188,0.18), 0 0 48px rgba(42,109,246,0.06); width: min(160px, 46vw); }
+    /* Disable hover/scale effects on touch devices to avoid rasterized blurriness */
+    .home-img:hover img { transform: none; }
+}
+.home-img { max-width: 100%; }
+
+/* Mobile: center the hero CTA without changing overall text alignment */
+@media (max-width: 700px) {
+    .home .home-content .btn {
+        display: block;
+        margin: 1.4rem auto 0;
+        text-align: center;
+    }
+    /* ensure hero image renders crisply on mobile and uses available space */
+    .home-img img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        image-rendering: auto;
+        -webkit-transform: translateZ(0);
+        transform: translateZ(0);
+        backface-visibility: hidden;
+    }
 }

@@ -112,6 +112,29 @@ header nav a.active {
   background: rgba(255,255,255,0.03);
 }
 
+/* language icon button (matching theme-btn behavior) */
+.lang-icon {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid rgba(255,255,255,0.06);
+  padding: 0.3rem 0.6rem;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 1rem;
+}
+.lang-icon:hover {
+  transform: translateY(-3px);
+  color: var(--text);
+  background: rgba(255,255,255,0.03);
+}
+.lang-icon:focus { outline: none; }
+
+/* Hide the language code visually on small screens but keep accessible */
+.lang-code { font-size: 0.95rem; }
+
 /* novo container que agrupa idioma + tema e fixa mais à direita */
 .header-controls {
   position: absolute;

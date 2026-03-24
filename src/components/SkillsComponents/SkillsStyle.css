@@ -5,20 +5,25 @@
 }
 
 .heading {
+  position: relative;
   font-size: 3rem;
   font-weight: 700;
   margin-bottom: 0.6rem;
+  padding-bottom: 0.8rem;
   text-align: center;
   color: var(--text);
 }
 
-.heading span {
-  display: inline-block;
-  height: 6px;
+.heading::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
   width: 80px;
+  height: 4px;
+  border-radius: 999px;
   background: linear-gradient(90deg, var(--primary), var(--accent));
-  margin-top: 12px;
-  border-radius: 6px;
+  transform: translateX(-50%);
 }
 
 /* descrição opcional abaixo do título */

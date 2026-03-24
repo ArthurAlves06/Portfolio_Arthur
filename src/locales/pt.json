@@ -9,8 +9,14 @@
   "hero": {
     "hello": "Olá, eu sou",
     "typing": "Sou",
-    "paragraph": "Apaixonado por tecnologia e atualmente trabalho com sistemas embarcados, onde comecei como estagiário e depois fui contratado. Estou cursando Engenharia de Software (4º período).",
-    "hire": "Contrate-me"
+    "typewriterPhrases": [
+      "Engenheiro de Software",
+      "Desenvolvedor Full Stack",
+      "Focado em Python e Cybersegurança"
+    ],
+    "paragraph":  "Acadêmico de Engenharia de Software (5º período) e desenvolvedor com experiência em sistemas embarcados e qualidade. Com foco atual em Python e Cibersegurança, utilizo minha base em C, React e Firebase para desenvolver projetos práticos e seguros. De estagiário a profissional efetivado, sigo evoluindo na construção de softwares escaláveis.",
+    "hire": "Contrate-me",
+    "contact": "Contato"
   },
   "footer": {
     "copyright": "Copyright © 2025 por Arthur | Todos os direitos reservados."
@@ -25,10 +31,73 @@
   "education": {
     "heading": "Minha Jornada",
     "title": "Educação",
-    "certificatesTitle": "Certificados"
+    "certificatesTitle": "Certificados",
+    "certificates": [
+      {
+        "title": "PYTHON: primeiras aplicações",
+        "issuer": "Alura",
+        "date": "2026",
+        "skills": [
+          "Manipulação de Strings",
+          "Módulos e funções",
+          "Lista, laços e exceções",
+          "Dicionários",
+          "Consolidando os conhecimentos"
+        ],
+        "link": "https://cursos.alura.com.br/user/arthurdesouzaalves06/course/python-crie-sua-primeira-aplicacao/certificate"
+      },
+      {
+        "title": "Pensamento computacional: fundamentos da computação e lógica de programação",
+        "issuer": "Alura",
+        "date": "2026",
+        "skills": [
+          "Fundamentos da computação",
+          "Pensamento computacional",
+          "Decomposição de problemas",
+          "Reconhecimento de padrões",
+          "Abstração",
+          "Criação de algoritmos",
+          "Lógica de programação",
+          "Estruturas condicionais",
+          "Estruturas de repetição"
+        ],
+        "link": "https://cursos.alura.com.br/user/arthurdesouzaalves06/course/computacao-fundamentos-computacao-pensamento-computacional/certificate"
+      },
+      {
+        "title": "HTTP: entendendo a web por baixo dos panos",
+        "issuer": "Alura",
+        "date": "2026",
+        "skills": [
+          "Protocolo HTTP",
+          "Estrutura de URLs",
+          "Métodos HTTP (GET, POST, etc)",
+          "Status Codes",
+          "Headers e requisições",
+          "HTTPS e segurança na web",
+          "Evolução do HTTP",
+          "Cliente e Servidor"
+        ],
+        "link": "https://cursos.alura.com.br/certificate/4415759a-92f6-41d8-873a-ec094598fc52?lang=pt_BR"
+      }
+    ]
+    ,
+    "items": [
+      {
+        "date": "2023 - 2027 (Previsão)",
+        "title": "Bacharelado em Engenharia de Software",
+        "institution": "Universidade Unicesumar",
+        "description": "Atualmente cursando o 5º período."
+      },
+      {
+        "date": "2024 - Presente",
+        "title": "Cursos online em Desenvolvimento de Software",
+        "institution": "Alura",
+        "description": "Aprendizado contínuo focado em programação, desenvolvimento de software e boas práticas da indústria."
+      }
+    ]
   },
   "projects": {
-    "heading": "Hoje",
+    "heading": "Projetos",
     "viewLive": "Ver Online",
     "viewCode": "Ver Código"
   },
@@ -56,6 +125,8 @@
     "tapHintFront": "Clique para ver o conteúdo",
     "learned": "O que aprendi",
     "viewCertificate": "Ver Certificado",
-    "tapHintBack": "Clique para voltar"
+    "tapHintBack": "Clique para voltar",
+    "more": "+{{count}} mais",
+    "showLess": "Ver menos"
   }
 }

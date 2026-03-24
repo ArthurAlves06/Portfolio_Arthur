@@ -1,6 +1,6 @@
 import React from 'react';
 import './HeroStyle.css';
-import ArthurImage from '../../assets/Arthur.jpg'; 
+import ArthurImage from '../../assets/Arthur.jpeg'; 
 import { FaGithub, FaLinkedin } from 'react-icons/fa';
 import { FiMail } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
@@ -31,7 +31,7 @@ const Hero = () => {
             <FiMail size={20} />
           </a>
         </div>
-        <a href="#" className="btn">{t('hero.hire')}</a>
+        <a href="#contact" className="btn">{t('hero.contact')}</a>
       </div>
     </section>
   );

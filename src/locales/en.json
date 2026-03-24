@@ -9,8 +9,14 @@
   "hero": {
     "hello": "Hello, it's",
     "typing": "I'm a",
+    "typewriterPhrases": [
+      "Software Engineer",
+      "Full Stack Developer",
+      "Focused on Python and Cybersecurity"
+    ],
     "paragraph": "Passionate about technology and currently work with embedded systems, where I started as an intern and was later hired full-time. I am pursuing a Software Engineering degree (4th semester).",
-    "hire": "Hire me"
+    "hire": "Hire me",
+    "contact": "Contact me"
   },
   "footer": {
     "copyright": "Copyright © 2025 by Arthur | All Rights Reserved."
@@ -25,10 +31,73 @@
   "education": {
     "heading": "My Journey",
     "title": "Education",
-    "certificatesTitle": "Certificates"
+    "certificatesTitle": "Certificates",
+    "certificates": [
+      {
+        "title": "PYTHON: first applications",
+        "issuer": "Alura",
+        "date": "2026",
+        "skills": [
+          "String manipulation",
+          "Modules and functions",
+          "Lists, loops and exceptions",
+          "Dictionaries",
+          "Consolidating knowledge"
+        ],
+        "link": "https://cursos.alura.com.br/user/arthurdesouzaalves06/course/python-crie-sua-primeira-aplicacao/certificate"
+      },
+      {
+        "title": "Computational Thinking: fundamentals of computing and programming logic",
+        "issuer": "Alura",
+        "date": "2026",
+        "skills": [
+          "Foundations of computing",
+          "Computational thinking",
+          "Problem decomposition",
+          "Pattern recognition",
+          "Abstraction",
+          "Algorithm design",
+          "Programming logic",
+          "Conditional structures",
+          "Loop structures"
+        ],
+        "link": "https://cursos.alura.com.br/user/arthurdesouzaalves06/course/computacao-fundamentos-computacao-pensamento-computacional/certificate"
+      },
+      {
+        "title": "HTTP: understanding the web under the hood",
+        "issuer": "Alura",
+        "date": "2026",
+        "skills": [
+          "HTTP protocol",
+          "URL structure",
+          "HTTP methods (GET, POST, etc)",
+          "Status codes",
+          "Headers and requests",
+          "HTTPS and web security",
+          "Evolution of HTTP",
+          "Client and Server"
+        ],
+        "link": "https://cursos.alura.com.br/certificate/4415759a-92f6-41d8-873a-ec094598fc52?lang=pt_BR"
+      }
+    ]
+    ,
+    "items": [
+      {
+        "date": "2023 - 2027 (Expected)",
+        "title": "Bachelor's Degree in Software Engineering",
+        "institution": "Unicesumar University",
+        "description": "Currently enrolled in the 5th semester."
+      },
+      {
+        "date": "2024 - Present",
+        "title": "Online Courses in Software Development",
+        "institution": "Alura",
+        "description": "Continuous learning focused on programming, software development, and industry best practices."
+      }
+    ]
   },
   "projects": {
-    "heading": "Today",
+    "heading": "Projects",
     "viewLive": "View Live",
     "viewCode": "View Code"
   },
@@ -56,6 +125,8 @@
     "tapHintFront": "Click to view details",
     "learned": "What I learned",
     "viewCertificate": "View Certificate",
-    "tapHintBack": "Click to go back"
+    "tapHintBack": "Click to go back",
+    "more": "+{{count}} more",
+    "showLess": "Show less"
   }
 }

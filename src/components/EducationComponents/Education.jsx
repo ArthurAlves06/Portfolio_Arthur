@@ -1,5 +1,6 @@
 import React, { useRef } from 'react';
 import { useEffect } from 'react';
+import { useState } from 'react';
 import './EducationStyle.css';
 import CertificateCard from './CertificateCard';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
@@ -24,58 +25,8 @@ const Education = () => {
   const suppressTimerRef = useRef(null);
   // toggle automatic centering behavior
   const AUTO_CENTER = false; // set to true to re-enable auto-centering
-  const certificates = [
-    {
-      title: 'PYTHON: primeiras aplicações',
-      issuer: 'Alura',
-      date: '2025',
-      skills: [
-        'Manipulação de Strings',
-        'Módulos e funções',
-        'Lista, laços e exceções',
-        'Dicionários',
-        'Consolidando os conhecimentos'
-      ],
-      certificateImage: null,
-      link: 'https://cursos.alura.com.br/user/arthurdesouzaalves06/course/python-crie-sua-primeira-aplicacao/certificate'
-    },
-    {
-      title: 'Pensamento computacional: fundamentos da computação e lógica de programação',
-      issuer: 'Alura',
-      date: '2025',
-      skills: [
-            'Fundamentos da computação',
-    'Pensamento computacional',
-    'Decomposição de problemas',
-    'Reconhecimento de padrões',
-    'Abstração',
-    'Criação de algoritmos',
-    'Lógica de programação',
-    'Estruturas condicionais',
-    'Estruturas de repetição'
-
-      ],
-      certificateImage: null,
-      link: 'https://cursos.alura.com.br/user/arthurdesouzaalves06/course/computacao-fundamentos-computacao-pensamento-computacional/certificate'
-    },
-    {
-      title: 'HTTP: entendendo a web por baixo dos panos',
-      issuer: 'Alura',
-      date: '2025',
-      skills: [
-        'Protocolo HTTP',
-        'Estrutura de URLs',
-        'Métodos HTTP (GET, POST, etc)',
-        'Status Codes',
-        'Headers e requisições',
-        'HTTPS e segurança na web',
-        'Evolução do HTTP',
-        'Cliente e Servidor'
-      ],
-      certificateImage: null,
-      link: 'https://alura.com.br'
-    }
-  ];
+  const certificates = t('education.certificates', { returnObjects: true }) || [];
+  const [currentIdx, setCurrentIdx] = useState(0);
   // function to center the card nearest the viewport center
   const centerNearest = () => {
     // don't auto-center while navigation explicitly requested
@@ -157,19 +108,17 @@ const Education = () => {
           <h3 className="title">{t('education.title')}</h3>
 
           <div className="education-box">
-            <EducationItem
-              date="2023 - 2027 (Expected)"
-              title="Bachelor's Degree in Software Engineering"
-              institution="Unicesumar University"
-              description="Currently enrolled in the 5th semester."
-            />
-
-            <EducationItem
-              date="2024 - Present"
-              title="Online Courses in Software Development"
-              institution="Alura"
-              description="Continuous learning focused on programming, software development, and industry best practices."
-            />
+            {(
+              t('education.items', { returnObjects: true }) || []
+            ).map((it, idx) => (
+              <EducationItem
+                key={idx}
+                date={it.date}
+                title={it.title}
+                institution={it.institution}
+                description={it.description}
+              />
+            ))}
           </div>
         </div>
       </div>
@@ -205,6 +154,7 @@ const Education = () => {
               if (target) {
                 const left = Math.max(0, target.offsetLeft + target.offsetWidth/2 - el.clientWidth/2);
                 el.scrollTo({ left, behavior: 'smooth' });
+                setCurrentIdx(targetIdx);
               }
             }}
             aria-label="Scroll left"
@@ -242,10 +192,25 @@ const Education = () => {
               trackStateRef.current.down = false;
             }}
             onScroll={() => {
-              // debounce scroll end to recentralize
+              // debounce scroll end to compute nearest index and update progress
               if (trackRef.current) {
                 if (trackRef.current._scrollTimeout) clearTimeout(trackRef.current._scrollTimeout);
                 trackRef.current._scrollTimeout = setTimeout(() => {
+                  try {
+                    const el = trackRef.current;
+                    const track = el.querySelector('.carousel-track');
+                    const children = Array.from(track.children);
+                    if (children.length) {
+                      const viewportCenter = el.scrollLeft + el.clientWidth / 2;
+                      let nearestIdx = 0; let minDist = Infinity;
+                      children.forEach((c, i) => {
+                        const cCenter = c.offsetLeft + c.offsetWidth / 2;
+                        const dist = Math.abs(cCenter - viewportCenter);
+                        if (dist < minDist) { minDist = dist; nearestIdx = i; }
+                      });
+                      setCurrentIdx(nearestIdx);
+                    }
+                  } catch {}
                   if (AUTO_CENTER) centerNearest();
                 }, 220);
               }
@@ -283,10 +248,19 @@ const Education = () => {
               if (target) {
                 const left = Math.max(0, target.offsetLeft + target.offsetWidth/2 - el.clientWidth/2);
                 el.scrollTo({ left, behavior: 'smooth' });
+                setCurrentIdx(targetIdx);
               }
             }}
             aria-label="Scroll right"
           ><span className="icon"><FaChevronRight /></span></button>
+        </div>
+        {/* progress indicator */}
+        <div className="cert-progress">
+          <span className="count left">{String(currentIdx + 1).padStart(2, '0')}</span>
+          <div className="bar">
+            <div className="bar-fill" style={{ width: `${((currentIdx + 1) / Math.max(1, certificates.length)) * 100}%` }} />
+          </div>
+          <span className="count right">{String(certificates.length).padStart(2, '0')}</span>
         </div>
       </div>
     </section>

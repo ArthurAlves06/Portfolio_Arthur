@@ -2,6 +2,8 @@ import React from 'react';
 import './ProjectsStyle.css';
 import { useTranslation } from 'react-i18next';
 import { FiExternalLink, FiGithub } from 'react-icons/fi';
+import XadrezImage from '../../assets/Xadrez.jpeg';
+import JogoDaVelhaImage from '../../assets/jogo da velha.png';
 
 const projectsData = [
   {
@@ -11,16 +13,16 @@ const projectsData = [
     image: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1600&q=80&auto=format&fit=crop',
     languages: ['React', 'CSS'],
     liveUrl: 'https://example.com/travel-app',
-    repoUrl: 'https://github.com/example/travel-app'
+    repoUrl: 'https://github.com/The-Wavem/cheila_lamaour'
   },
   {
     id: 2,
-    title: 'Contemplate the Meaning of Life Twice a Day',
+    title: 'Xadrez em C',
     category: 'How to',
-    image: 'https://images.unsplash.com/photo-1501004318641-b39e6451bec6?w=1600&q=80&auto=format&fit=crop',
-    languages: ['Next.js', 'TypeScript'],
+    image: XadrezImage,
+    languages: ['C'],
     liveUrl: null,
-    repoUrl: 'https://github.com/example/meaning-app'
+    repoUrl: 'https://github.com/ArthurAlves06/Xadrez'
   },
   {
     id: 3,
@@ -33,12 +35,12 @@ const projectsData = [
   },
   {
     id: 4,
-    title: 'Take Control of Your Hat Life',
+    title: 'Jogo da Velha em C',
     category: 'Hats',
-    image: 'https://images.unsplash.com/photo-1520975910013-2a0b2f3b3cbb?w=1600&q=80&auto=format&fit=crop',
-    languages: ['JavaScript', 'HTML', 'CSS'],
+    image: JogoDaVelhaImage,
+    languages: ['C'],
     liveUrl: null,
-    repoUrl: 'https://github.com/example/hat-life'
+    repoUrl: 'https://github.com/ArthurAlves06/Jogo-da-velha'
   }
 ];
 

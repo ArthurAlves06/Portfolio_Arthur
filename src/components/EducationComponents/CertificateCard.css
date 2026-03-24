@@ -1,12 +1,15 @@
 .certificate-wrapper {
   perspective: 1000px;
   width: 100%;
-  max-width: 320px;
-  height: 380px;
+  max-width: 350px;
+  /* use aspect-ratio to keep card proportions and avoid layout jumps */
+  aspect-ratio: 4 / 3;
+  min-height: 260px;
   /* manter wrapper sem padding para que o cartão interno ocupe o espaço corretamente */
   padding: 0;
   box-sizing: border-box;
-  display: inline-block;
+  display: block;
+  margin: 0 auto;
   background: transparent;
   overflow: visible;
 }
@@ -50,13 +53,41 @@
   background: var(--card-bg, var(--surface));
   border: none;
   /* subtle resting shadow to avoid heavy gray backdrop between cards */
-  box-shadow: 0 8px 20px rgba(2, 6, 23, 0.04);
+  box-shadow: var(--card-shadow-soft);
 }
 
 .certificate-front {
   align-items: center;
   text-align: center;
   background: transparent; /* remove boxed bg so certificate images feel edge-to-edge */
+}
+
+/* Header shown at top of certificate: icon left, date badge right */
+.certificate-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 0.6rem;
+}
+.cert-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 11px;
+  background: linear-gradient(180deg, var(--primary), var(--accent));
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--icon-shadow);
+}
+.cert-icon svg { display: block; width: 18px; height: 18px; }
+.cert-date {
+  font-size: 0.95rem;
+  background: rgba(0,0,0,0.18);
+  color: #fff;
+  padding: 0.45rem 0.7rem;
+  border-radius: 999px;
+  font-weight: 600;
 }
 
 
@@ -67,27 +98,71 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--primary), var(--accent));
+  margin-bottom: 0.6rem;
+  background: transparent; /* keep container transparent to preserve card background */
 }
 
-.issuer-logo {
-  font-size: 3rem;
-  font-weight: 700;
-  color: white;
+/* Blue square behind the middle icon (when no image) */
+.certificate-placeholder .issuer-logo {
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  background: rgba(31,52,188,0.06); /* light blue circular background */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--icon-shadow);
+  color: var(--primary); /* icon color */
 }
+.certificate-placeholder .issuer-logo svg { width: 40px; height: 40px; color: inherit; }
+
+/* Icon-specific color treatments (use gradients clipped to icon when SVG honors currentColor) */
+.issuer-logo.icon-python {
+  background: linear-gradient(90deg, #1f34bc 0%, #ffcc00 100%);
+  color: #fff;
+}
+.issuer-logo.icon-python svg { color: #fff; }
+
+.issuer-logo.icon-http {
+  background: linear-gradient(90deg, #2a6df6 0%, #1fb6bf 100%);
+  color: #fff;
+}
+.issuer-logo.icon-http svg { color: #fff; }
+
+.issuer-logo.icon-computational {
+  background: linear-gradient(90deg, #8a2be2 0%, #ff7ab6 100%);
+  color: #fff;
+}
+.issuer-logo.icon-computational svg { color: #fff; }
+
+.issuer-logo.icon-default {
+  background: rgba(31,52,188,0.06);
+  color: var(--primary);
+}
+
+/* ensure header icon is white on the blue square */
+.cert-icon { color: #ffffff; }
+.cert-icon svg { color: inherit; }
 
 .certificate-info h3 {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--text);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: var(--primary);
   margin: 0 0 0.4rem;
+  max-width: 92%;
+  line-height: 1.15;
+  text-wrap: balance;
+  word-break: normal;
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 
 .certificate-info .issuer {
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: var(--primary);
-  font-weight: 600;
+  font-weight: 700;
   margin: 0.2rem 0;
+  text-transform: uppercase;
 }
 
 .certificate-info .date {
@@ -103,6 +178,14 @@
   text-align: center;
   overflow-y: auto;
   padding: 1rem;
+  gap: 0.85rem;
+}
+
+.back-actions {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin: 0.1rem 0 0.35rem;
 }
 
 /* Styled scrollbar for the skills list (the vertical scroll inside the back of card) */
@@ -173,18 +256,28 @@
   margin-right: 0.6rem;
 }
 
-/* pequeno indicativo quando existirem mais skills do que as exibidas */
-.skills-list .more-skills {
-  font-style: italic;
-  color: var(--muted);
-  text-align: center;
-  padding-top: 0.4rem;
+/* toggle to show/hide the remaining learning items */
+.more-skills {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0.2rem auto 0;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(31,52,188,0.08);
+  color: var(--primary);
   font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+}
+.more-skills:hover {
+  background: rgba(31,52,188,0.14);
 }
 
 .certificate-image {
   width: 100%;
-  height: auto;
+  height: 40%;
   margin-bottom: 0.6rem;
   border-radius: 6px;
   overflow: visible;
@@ -195,11 +288,9 @@
 }
 
 .certificate-image img {
-  max-width: 100%;
-  max-height: 260px;
-  width: auto;
-  height: auto;
-  object-fit: contain;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
   display: block;
 }
 
@@ -215,10 +306,19 @@
 /* make the certificate link look more like a prominent button on the back */
 .certificate-back .certificate-link {
   width: auto;
-  min-width: 140px;
-  padding: 0.6rem 1.1rem;
-  border-radius: 10px;
-  font-size: 0.95rem;
+  min-width: 160px;
+  padding: 0.8rem 1.25rem;
+  border-radius: 999px;
+  font-size: 0.96rem;
+  font-weight: 700;
+  background: linear-gradient(180deg, var(--primary), var(--accent));
+  color: #ffffff;
+  box-shadow: 0 10px 24px rgba(31,52,188,0.18);
+}
+
+.certificate-back .certificate-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(31,52,188,0.24);
 }
 
 .certificate-back .skills-list {
@@ -228,12 +328,16 @@
   margin-bottom: 0.8rem;
 }
 
+.certificate-back .more-skills {
+  width: fit-content;
+}
+
 /* Borda do certificado/efeito de brilho */
 .certificate-card:hover {
   /* avoid transform on hover to prevent conflicts with flip */
   border-color: rgba(31, 52, 188, 0.9);
   /* slightly stronger bluish hover shadow for affordance */
-  box-shadow: 0 10px 28px rgba(31,52,188,0.10);
+  box-shadow: var(--card-shadow-hover);
   z-index: 12;
 }
 
@@ -246,13 +350,14 @@
 
 .certificate-card:focus {
   outline: none;
-  box-shadow: 0 6px 30px rgba(31,52,188,0.18);
+  box-shadow: var(--card-shadow-hover);
 }
 
 @media (max-width: 768px) {
   .certificate-wrapper {
-    max-width: none;
-    height: 380px;
+    max-width: 340px;
+    aspect-ratio: 4 / 3;
+    min-height: 184px;
   }
 
   .certificate-front,
@@ -261,9 +366,9 @@
   }
 
   .certificate-image {
-    width: 90px;
-    height: 90px;
-    margin-bottom: 0.6rem;
+    width: 100%;
+    height: 34%;
+    margin-bottom: 0.4rem;
   }
 
   .issuer-logo {

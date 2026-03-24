@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
 import './CertificateCard.css';
 import { useTranslation } from 'react-i18next';
+import { PiMedalBold } from 'react-icons/pi';
+import { AiOutlinePython } from 'react-icons/ai';
+import { LuBrainCircuit } from 'react-icons/lu';
+import { TbWorld } from 'react-icons/tb';
 
 const CertificateCard = ({ title, issuer, date, skills = [], certificateImage, link }) => {
   const [isFlipped, setIsFlipped] = useState(false);
+  const [showAllSkills, setShowAllSkills] = useState(false);
   const { t } = useTranslation();
 
   const maxVisible = 4;
   const visibleSkills = skills.slice(0, maxVisible);
-  const extraCount = skills.length > maxVisible ? skills.length - maxVisible : 0;
+  const extraSkills = skills.slice(maxVisible);
+  const extraCount = extraSkills.length;
 
   const toggle = (e) => {
     // evitar scroll ao pressionar Space
@@ -26,6 +32,11 @@ const CertificateCard = ({ title, issuer, date, skills = [], certificateImage, l
     setIsFlipped(prev => !prev);
   };
 
+  const toggleSkills = (e) => {
+    e.stopPropagation();
+    setShowAllSkills(prev => !prev);
+  };
+
   return (
     <div className="certificate-wrapper">
       <div
@@ -37,38 +48,83 @@ const CertificateCard = ({ title, issuer, date, skills = [], certificateImage, l
         onKeyDown={(e) => { if (e.key === 'Enter' || e.code === 'Space') toggle(e); }}
       >
         <div className="certificate-front">
+          <div className="certificate-header">
+            <div className="cert-icon" aria-hidden>
+              <PiMedalBold size={20} />
+            </div>
+            <div className="cert-date">{date}</div>
+          </div>
           <div className="certificate-image">
             {certificateImage ? (
-              <img src={certificateImage} alt={title} />
-            ) : (
-              <div className="certificate-placeholder">
-                <span className="issuer-logo">{issuer ? issuer.charAt(0) : '?'}</span>
-              </div>
-            )}
+                <img src={certificateImage} alt={title} />
+              ) : (
+                <div className="certificate-placeholder">
+                  {(() => {
+                    const key = title ? title.toLowerCase() : '';
+                    let iconClass = '';
+                    if (key.includes('python')) iconClass = 'icon-python';
+                    else if (key.includes('http')) iconClass = 'icon-http';
+                    else if (key.includes('pensamento') || key.includes('comput')) iconClass = 'icon-computational';
+                    else iconClass = 'icon-default';
+
+                    return (
+                      <span className={`issuer-logo ${iconClass}`}>
+                        {key.includes('python') ? (
+                          <AiOutlinePython size={36} />
+                        ) : key.includes('http') ? (
+                          <TbWorld size={36} />
+                        ) : (key.includes('pensamento') || key.includes('comput')) ? (
+                          <LuBrainCircuit size={36} />
+                        ) : (
+                          <PiMedalBold size={36} />
+                        )}
+                      </span>
+                    );
+                  })()}
+                </div>
+              )}
           </div>
 
           <div className="certificate-info">
             <h3>{title}</h3>
             <p className="issuer">{issuer}</p>
-            <p className="date">{date}</p>
             <p className="tap-hint">{t('certificate.tapHintFront')}</p>
           </div>
         </div>
 
         <div className="certificate-back">
           <h3>{t('certificate.learned')}</h3>
+          {link && (
+            <div className="back-actions">
+              <a
+                href={link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="certificate-link"
+                onClick={(e) => { e.stopPropagation(); }}
+                onKeyDown={(e) => { e.stopPropagation(); }}
+              >
+                {t('certificate.viewCertificate')}
+              </a>
+            </div>
+          )}
           <ul className="skills-list">
             {visibleSkills.map((skill, index) => (
               <li key={index}>{skill}</li>
             ))}
-            {extraCount > 0 && (
-              <li className="more-skills">+{extraCount} mais</li>
-            )}
+            {showAllSkills && extraSkills.map((skill, index) => (
+              <li key={`extra-${index}`}>{skill}</li>
+            ))}
           </ul>
-          {link && (
-            <a href={link} target="_blank" rel="noopener noreferrer" className="certificate-link">
-              {t('certificate.viewCertificate')}
-            </a>
+          {extraCount > 0 && (
+            <button
+              type="button"
+              className="more-skills"
+              onClick={toggleSkills}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') toggleSkills(e); }}
+            >
+              {showAllSkills ? t('certificate.showLess') : t('certificate.more', { count: extraCount })}
+            </button>
           )}
           <p className="tap-hint">{t('certificate.tapHintBack')}</p>
         </div>

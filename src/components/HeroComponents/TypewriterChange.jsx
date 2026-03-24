@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-
-const phrases = ['modern', 'performant', 'accessible', 'fun'];
+import { useTranslation } from 'react-i18next';
 
 export default function TypewriterChange({ className }) {
+  const { t } = useTranslation();
+  const phrases = t('hero.typewriterPhrases', { returnObjects: true }) || ['modern', 'performant', 'accessible', 'fun'];
   const [phraseIndex, setPhraseIndex] = useState(0);
   const [display, setDisplay] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
