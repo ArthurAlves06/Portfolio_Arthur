@@ -23,7 +23,7 @@
   }
   ,
   "skills": {
-    "heading": "Minhas Skills",
+    "heading": "Minhas Habilidades",
     "sub": "Um resumo das tecnologias e linguagens com as quais trabalho diariamente.",
     "group1": { "title": "Habilidades" },
     "group2": { "title": "Ferramentas" }

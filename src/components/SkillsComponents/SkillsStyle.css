@@ -92,18 +92,55 @@
 
 /* lista de skills interna */
 .group-list {
-  list-style: disc;
-  padding-left: 1.4rem;
+  list-style: none;
+  padding: 0;
   margin: 0;
   color: var(--muted);
-  font-size: 1.4rem;
-  line-height: 1.8;
+  font-size: 1.1rem;
+  line-height: 1.4;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .group-item {
-  margin-bottom: 0.8rem;
+  margin: 0;
   color: var(--text);
+  display: flex;
+  align-items: flex-start;
+  gap: 0.9rem;
 }
+
+.item-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(31,52,188,0.06);
+  color: var(--primary);
+  flex: 0 0 40px;
+}
+
+.item-text { display: flex; flex-direction: column; }
+.item-title { font-weight: 700; color: var(--text); font-size: 1rem; }
+.item-desc { font-size: 0.9rem; color: var(--muted); }
+
+/* Brand/color styles for icons */
+.item-icon.icon-python { background: linear-gradient(90deg,#3776AB 0%,#FFD43B 100%); color: #fff; }
+.item-icon.icon-java { background: linear-gradient(90deg,#f89820 0%,#d04500 100%); color: #fff; }
+.item-icon.icon-c { background: linear-gradient(90deg,#00599C 0%,#2b6ea3 100%); color: #fff; }
+.item-icon.icon-react { background: linear-gradient(90deg,#61DAFB 0%,#61DAFB 100%); color: #0b0b0b; }
+.item-icon.icon-js { background: linear-gradient(90deg,#F7DF1E 0%,#f0c419 100%); color: #000; }
+.item-icon.icon-html { background: linear-gradient(90deg,#E34F26 0%,#FF6A00 100%); color: #fff; }
+.item-icon.icon-css { background: linear-gradient(90deg,#1572B6 0%,#2965f1 100%); color: #fff; }
+.item-icon.icon-figma { background: linear-gradient(90deg,#F24E1E 0%,#FF7262 100%); color: #fff; }
+.item-icon.icon-vscode { background: linear-gradient(90deg,#007ACC 0%,#005A9C 100%); color: #fff; }
+.item-icon.icon-firebase { background: linear-gradient(90deg,#FFCA28 0%,#FF6F00 100%); color: #000; }
+.item-icon.icon-github { background: #181717; color: #fff; }
+.item-icon.icon-embedded { background: linear-gradient(90deg,#4b5563 0%,#6b7280 100%); color: #fff; }
+.item-icon.icon-default { background: rgba(31,52,188,0.06); color: var(--primary); }
 
 /* responsivo */
 @media (max-width: 1000px) {

@@ -180,6 +180,18 @@ body.light {
     padding-inline: 2%;
 }
 
+/* protege a imagem para não escapar do container em larguras extremas */
+.home-img {
+    width: clamp(220px, 36vw, 680px);
+    aspect-ratio: 1/1;
+    border-radius: 50%;
+    overflow: hidden;
+    flex-shrink: 0;
+    position: relative;
+    box-shadow: 0 0 30px rgba(31,52,188,0.18), 0 0 60px rgba(42,109,246,0.08);
+    transition: box-shadow 260ms ease, transform 260ms ease;
+}
+
 /* Force the primary CTA in the hero to be a filled blue button in both themes */
 .home .btn {
     background-color: var(--primary);
@@ -244,5 +256,18 @@ body.light {
         -webkit-transform: translateZ(0);
         transform: translateZ(0);
         backface-visibility: hidden;
+    }
+}
+
+/* Slight right offset for desktop to avoid image touching viewport edge */
+@media (min-width: 1000px) {
+    /* avoid horizontal scrollbar by hiding x-overflow and use transform for visual shift */
+    .home {
+        overflow-x: hidden;
+    }
+
+    .home-img {
+        /* slightly larger visual nudge to the right per user request */
+        transform: translateX(clamp(1.6rem, 3.5vw, 5rem));
     }
 }
