@@ -94,6 +94,16 @@ header nav a.active {
   border-bottom-color: var(--primary);
 }
 
+header nav.lang-switching {
+  opacity: 0.78;
+  transform: translateY(1px);
+  transition: opacity 220ms ease, transform 220ms ease;
+}
+
+header nav.lang-switching a {
+  transition: opacity 220ms ease, transform 220ms ease, color 220ms ease, border-bottom-color 220ms ease;
+}
+
 /* botão simples para alternar tema */
 .theme-btn {
   position: static; /* alterado: agora o botão fica no fluxo dentro do container */
@@ -124,11 +134,17 @@ header nav a.active {
   align-items: center;
   gap: 0.4rem;
   font-size: 1rem;
+  transition: transform 220ms ease, background 220ms ease, color 220ms ease, opacity 220ms ease, box-shadow 220ms ease;
 }
 .lang-icon:hover {
   transform: translateY(-3px);
   color: var(--text);
   background: rgba(255,255,255,0.03);
+}
+.lang-icon.is-switching {
+  transform: scale(0.96);
+  opacity: 0.85;
+  box-shadow: 0 0 0 1px rgba(31, 52, 188, 0.12);
 }
 .lang-icon:focus { outline: none; }
 

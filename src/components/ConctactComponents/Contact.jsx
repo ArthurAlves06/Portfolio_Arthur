@@ -1,47 +1,48 @@
 import React, { useState } from 'react';
 import './ContactStyle.css';
-import { FiMail, FiPhone, FiMapPin } from 'react-icons/fi';
+import { FiMail, FiPhone, FiMapPin, FiCheckCircle } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
-import emailjs from '@emailjs/browser';
 
 const Contact = () => {
   const { t } = useTranslation();
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
   const [sending, setSending] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+
+  const handleResetMessage = () => {
+    setSubmitted(false);
+    setErrorMessage('');
+    setForm({ name: '', email: '', subject: '', message: '' });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSending(true);
-    try {
-      const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
-      const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
-      const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+    setSubmitted(false);
+    setErrorMessage('');
 
-      // debug: garantir que as env vars estejam presentes
-      console.log('EmailJS envs:', { serviceId, templateId, publicKey });
-      if (!serviceId || !templateId || !publicKey) {
-        console.error('Missing EmailJS env vars');
-        alert('Faltam variáveis de ambiente EmailJS. Verifique .env e reinicie o dev server.');
-        setSending(false);
-        return;
+    try {
+      const endpoint = 'https://formspree.io/f/mkopgzbn';
+      const response = await fetch(endpoint, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+        },
+        body: new FormData(e.currentTarget),
+      });
+
+      if (!response.ok) {
+        throw new Error('Falha ao enviar o formulário');
       }
 
-      const templateParams = {
-        from_name: form.name,
-        from_email: form.email,
-        subject: form.subject,
-        message: form.message,
-        to_email: 'arthurdesouzaalves06@gmail.com'
-      };
-
-      await emailjs.send(serviceId, templateId, templateParams, publicKey);
-      alert(t('contact.form.success') || 'Mensagem enviada!');
+      setSubmitted(true);
       setForm({ name: '', email: '', subject: '', message: '' });
     } catch (err) {
-      console.error('EmailJS error:', err);
-      alert(t('contact.form.error') || 'Erro ao enviar mensagem.');
+      console.error('Formspree error:', err);
+      setErrorMessage(t('contact.form.error') || 'Erro ao enviar mensagem.');
     } finally {
       setSending(false);
     }
@@ -87,6 +88,27 @@ const Contact = () => {
 
         <div className="contact-right">
           <form className="contact-form" onSubmit={handleSubmit}>
+            {submitted ? (
+              <div className="contact-status contact-status-success" role="status" aria-live="polite">
+                <div className="contact-status-icon" aria-hidden="true">
+                  <FiCheckCircle />
+                </div>
+                <div className="contact-status-copy">
+                  <strong>{t('contact.form.success')}</strong>
+                  <span>{t('contact.introDesc')}</span>
+                </div>
+                <button type="button" className="contact-status-action" onClick={handleResetMessage}>
+                  {t('contact.form.sendAnother')}
+                </button>
+              </div>
+            ) : null}
+
+            {errorMessage ? (
+              <div className="contact-status contact-status-error" role="alert">
+                <strong>{errorMessage}</strong>
+              </div>
+            ) : null}
+
             <div className="input-row">
               <div className="input-group">
                 <label>{t('contact.form.labelName')}</label>
@@ -110,7 +132,12 @@ const Contact = () => {
               <textarea name="message" cols="30" rows="7" placeholder={t('contact.form.placeholderMessage')} required value={form.message} onChange={handleChange}></textarea>
             </div>
 
-            <input type="submit" disabled={sending} value={sending ? (t('contact.form.sending') || 'Enviando...') : t('contact.form.submit')} className="btn" />
+            <button type="submit" disabled={sending} className={`btn contact-submit ${sending ? 'is-loading' : ''}`}>
+              <span className="submit-label">
+                {sending ? (t('contact.form.sending') || 'Enviando...') : t('contact.form.submit')}
+              </span>
+              {sending ? <span className="submit-spinner" aria-hidden="true" /> : null}
+            </button>
           </form>
         </div>
       </div>

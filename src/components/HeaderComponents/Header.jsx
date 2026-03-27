@@ -9,6 +9,7 @@ const Header = () => {
   const [active, setActive] = useState('home');
   const [scrolled, setScrolled] = useState(false);
   const [navOnly, setNavOnly] = useState(false);
+  const [isSwitchingLang, setIsSwitchingLang] = useState(false);
   const lastY = useRef(0);
   const { theme, toggleTheme } = useTheme();
 
@@ -60,7 +61,7 @@ const Header = () => {
       <div className="header-inner">
         <div className="logo">Arthur.</div>
 
-        <nav>
+        <nav className={isSwitchingLang ? 'lang-switching' : ''}>
           <a href="#home" className={active === 'home' ? 'active' : ''}>{t('header.home')}</a>
           <a href="#projects" className={active === 'projects' ? 'active' : ''}>{t('header.projects')}</a>
           <a href="#skills" className={active === 'skills' ? 'active' : ''}>{t('header.skills')}</a>
@@ -71,11 +72,13 @@ const Header = () => {
         {/* Right-side controls: language + theme */}
         <div className="header-controls" role="group" aria-label="Header controls">
           <button
-            className="lang-icon"
+            className={`lang-icon ${isSwitchingLang ? 'is-switching' : ''}`}
             onClick={() => {
+              setIsSwitchingLang(true);
               const next = i18n.language === 'en' ? 'pt' : 'en';
               i18n.changeLanguage(next);
               localStorage.setItem('lang', next);
+              window.setTimeout(() => setIsSwitchingLang(false), 220);
             }}
             title={i18n.language === 'en' ? 'Switch to Português' : 'Switch to English'}
             aria-label="Toggle language"

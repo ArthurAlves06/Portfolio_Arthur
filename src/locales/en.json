@@ -7,16 +7,16 @@
     "contact": "Contact"
   },
   "hero": {
-    "hello": "Hello, it's",
-    "typing": "I'm a",
+    "hello": "Hello, I'm",
+    "typing": "I'm",
     "typewriterPhrases": [
       "Software Engineer",
       "Full Stack Developer",
       "Focused on Python and Cybersecurity"
     ],
-    "paragraph": "Passionate about technology and currently work with embedded systems, where I started as an intern and was later hired full-time. I am pursuing a Software Engineering degree (4th semester).",
+    "paragraph": "Software Engineering student (5th semester) and developer with experience in embedded systems and quality. Currently focused on Python and Cybersecurity, I leverage my background in C, React and Firebase to build practical and secure projects. From intern to full-time hire, I continue evolving in building scalable software.",
     "hire": "Hire me",
-    "contact": "Contact me"
+    "contact": "Contact"
   },
   "footer": {
     "copyright": "Copyright © 2025 by Arthur | All Rights Reserved."
@@ -118,7 +118,11 @@
       "placeholderSubject": "Email Subject",
       "labelMessage": "Message",
       "placeholderMessage": "Your Message",
-      "submit": "Send Message"
+      "submit": "Send Message",
+      "sending": "Sending...",
+      "success": "Message sent successfully!",
+      "error": "Error sending message. Please try again.",
+      "sendAnother": "Send another message"
     }
   },
   "certificate": {

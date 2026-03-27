@@ -100,8 +100,8 @@ span {
 
 .btn:hover {
     background-color: rgb(31, 52, 188);
-    color: black;
-    box-shadow: 0 0 25px rgb(31, 52, 188);
+  color: var(--bg);
+  box-shadow: var(--card-shadow-hover);
     transform: scale(1.03);
 }
 

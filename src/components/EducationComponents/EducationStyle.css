@@ -336,3 +336,48 @@
     padding-top: 3.6rem;
   }
 }
+
+/* Hide Swiper pagination bullets (pagination dots) */
+.swiper-pagination,
+.swiper-pagination-bullet {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+/* Ensure Swiper slides center and fit on small screens */
+.mySwiper { width: 100%; }
+.mySwiper .swiper-wrapper { align-items: center; }
+.mySwiper .swiper-slide { display: flex; justify-content: center; }
+
+@media (max-width: 700px) {
+  .certificates-carousel {
+    gap: 0.6rem;
+  }
+
+  .mySwiper {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .mySwiper .swiper-wrapper {
+    align-items: stretch;
+  }
+
+  .mySwiper .swiper-slide {
+    width: clamp(210px, 68vw, 250px) !important;
+    max-width: clamp(210px, 68vw, 250px);
+    display: flex;
+    justify-content: center;
+  }
+
+  .certificates-carousel,
+  .mySwiper,
+  .mySwiper .swiper-wrapper {
+    overflow: visible;
+  }
+
+  .certificate-wrapper {
+    max-width: 250px;
+  }
+}

@@ -8,8 +8,8 @@ import JogoDaVelhaImage from '../../assets/jogo da velha.png';
 const projectsData = [
   {
     id: 1,
-    title: '5 Inspiring Apps for Your Next Trip',
-    category: 'Travel',
+    title: 'Aplicativo de Viagem',
+    category: 'React + CSS',
     image: 'https://images.unsplash.com/photo-1501785888041-af3ef285b470?w=1600&q=80&auto=format&fit=crop',
     languages: ['React', 'CSS'],
     liveUrl: 'https://example.com/travel-app',
@@ -18,7 +18,7 @@ const projectsData = [
   {
     id: 2,
     title: 'Xadrez em C',
-    category: 'How to',
+    category: 'Jogo',
     image: XadrezImage,
     languages: ['C'],
     liveUrl: null,
@@ -26,8 +26,8 @@ const projectsData = [
   },
   {
     id: 3,
-    title: 'Urban Exploration Apps',
-    category: 'Steps',
+    title: 'Exploração Urbana',
+    category: 'React + Vite',
     image: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=1600&q=80&auto=format&fit=crop',
     languages: ['React', 'Vite'],
     liveUrl: 'https://example.com/urban',
@@ -36,7 +36,7 @@ const projectsData = [
   {
     id: 4,
     title: 'Jogo da Velha em C',
-    category: 'Hats',
+    category: 'Lógica e prática',
     image: JogoDaVelhaImage,
     languages: ['C'],
     liveUrl: null,

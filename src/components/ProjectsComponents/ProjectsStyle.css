@@ -10,9 +10,25 @@
 }
 
 .projects-heading {
-  font-size: 28px;
-  margin: 0 0 18px 6px;
+  position: relative;
+  font-size: var(--heading-size);
   font-weight: 700;
+  margin: 0 0 2.2rem;
+  padding-bottom: 0.8rem;
+  color: var(--text);
+  text-align: center;
+}
+
+.projects-heading::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 72px;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--primary);
+  transform: translateX(-50%);
 }
 
 .projects-grid {

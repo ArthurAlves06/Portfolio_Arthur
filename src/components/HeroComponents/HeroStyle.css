@@ -180,6 +180,29 @@ body.light {
     padding-inline: 2%;
 }
 
+/* Stabilize hero layout when content length changes (e.g., language switch) */
+.home {
+    /* fallback: no global min-height to avoid interfering with fixed header on small screens */
+}
+
+/* Apply stabilization only on medium+ screens so mobile header layout is unaffected */
+@media (min-width: 700px) {
+    .home {
+        min-height: 60vh; /* keep hero height consistent across translations */
+    }
+
+    .home-content {
+        flex: 1 1 540px; /* allow content to grow but preserve a preferred width */
+        min-width: 300px; /* avoid collapsing on short translations */
+        max-width: 72rem;
+    }
+
+    /* Reserve vertical space for the paragraph so shorter/longer translations don't shift image */
+    .home .home-content p {
+        min-height: 7.2rem;
+    }
+}
+
 /* protege a imagem para não escapar do container em larguras extremas */
 .home-img {
     width: clamp(220px, 36vw, 680px);

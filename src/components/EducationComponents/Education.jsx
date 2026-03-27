@@ -1,7 +1,11 @@
-import React, { useRef } from 'react';
-import { useEffect } from 'react';
-import { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import './EducationStyle.css';
+// Swiper imports
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/effect-coverflow';
+import 'swiper/css/pagination';
+import { EffectCoverflow, Pagination } from 'swiper/modules';
 import CertificateCard from './CertificateCard';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
@@ -20,13 +24,32 @@ const EducationItem = ({ date, title, institution, description }) => (
 const Education = () => {
   const { t } = useTranslation();
   const trackRef = useRef(null);
+  const swiperRef = useRef(null);
   const trackStateRef = useRef({ down: false, startX: 0, scrollLeft: 0 });
   const suppressAutoCenterRef = useRef(false);
   const suppressTimerRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 700);
+  const [isDragging, setIsDragging] = useState(false);
+  const touchStartRef = useRef({ x: 0, y: 0 });
+  const dragResetTimerRef = useRef(null);
   // toggle automatic centering behavior
   const AUTO_CENTER = false; // set to true to re-enable auto-centering
   const certificates = t('education.certificates', { returnObjects: true }) || [];
   const [currentIdx, setCurrentIdx] = useState(0);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 700);
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (dragResetTimerRef.current) clearTimeout(dragResetTimerRef.current);
+    };
+  }, []);
+
   // function to center the card nearest the viewport center
   const centerNearest = () => {
     // don't auto-center while navigation explicitly requested
@@ -131,126 +154,65 @@ const Education = () => {
         <div className="certificates-carousel">
           <button
             className="carousel-btn left"
-            onClick={() => {
-              // suppress auto-centering briefly so the click-driven scroll finishes
-              suppressAutoCenterRef.current = true;
-              if (suppressTimerRef.current) clearTimeout(suppressTimerRef.current);
-              suppressTimerRef.current = setTimeout(() => { suppressAutoCenterRef.current = false; suppressTimerRef.current = null; }, 600);
-
-              const el = trackRef.current; if (!el) return;
-              // scroll to previous card
-              const track = el.querySelector('.carousel-track'); if (!track) return;
-              const children = Array.from(track.children); if (children.length === 0) return;
-              // find currently centered
-              const viewportCenter = el.scrollLeft + el.clientWidth / 2;
-              let nearestIdx = 0; let minDist = Infinity;
-              children.forEach((c, i) => {
-                const cCenter = c.offsetLeft + c.offsetWidth / 2;
-                const dist = Math.abs(cCenter - viewportCenter);
-                if (dist < minDist) { minDist = dist; nearestIdx = i; }
-              });
-              const targetIdx = Math.max(0, nearestIdx - 1);
-              const target = children[targetIdx];
-              if (target) {
-                const left = Math.max(0, target.offsetLeft + target.offsetWidth/2 - el.clientWidth/2);
-                el.scrollTo({ left, behavior: 'smooth' });
-                setCurrentIdx(targetIdx);
-              }
-            }}
+            onClick={() => swiperRef.current && swiperRef.current.slidePrev()}
             aria-label="Scroll left"
           ><span className="icon"><FaChevronLeft /></span></button>
 
-          <div
-            className="carousel-viewport"
-            ref={trackRef}
-            onPointerDown={(e) => {
-              const el = trackRef.current; if (!el) return;
-              trackStateRef.current.down = true;
-              trackStateRef.current.startX = e.clientX;
-              trackStateRef.current.scrollLeft = el.scrollLeft;
-              trackStateRef.current.moved = false;
-            }}
-            onPointerMove={(e) => {
-              const el = trackRef.current; if (!el || !trackStateRef.current.down) return;
-              const dx = e.clientX - trackStateRef.current.startX;
-              // small threshold so clicks are not mistaken for drag
-              if (!trackStateRef.current.moved && Math.abs(dx) < 6) return;
-              trackStateRef.current.moved = true;
-              el.dataset.dragging = 'true';
-              el.scrollLeft = trackStateRef.current.scrollLeft - dx;
-            }}
-            onPointerUp={(e) => {
-              const el = trackRef.current; if (!el) return;
-              // remove dragging flag shortly after release so click handlers can detect it
-              setTimeout(() => { el.dataset.dragging = 'false'; }, 50);
-              trackStateRef.current.down = false;
-              // recentraliza após o usuário soltar o drag
-              if (AUTO_CENTER) setTimeout(() => centerNearest(), 80);
-            }}
-            onPointerLeave={(e) => {
-              const el = trackRef.current; if (el) el.dataset.dragging = 'false';
-              trackStateRef.current.down = false;
-            }}
-            onScroll={() => {
-              // debounce scroll end to compute nearest index and update progress
-              if (trackRef.current) {
-                if (trackRef.current._scrollTimeout) clearTimeout(trackRef.current._scrollTimeout);
-                trackRef.current._scrollTimeout = setTimeout(() => {
-                  try {
-                    const el = trackRef.current;
-                    const track = el.querySelector('.carousel-track');
-                    const children = Array.from(track.children);
-                    if (children.length) {
-                      const viewportCenter = el.scrollLeft + el.clientWidth / 2;
-                      let nearestIdx = 0; let minDist = Infinity;
-                      children.forEach((c, i) => {
-                        const cCenter = c.offsetLeft + c.offsetWidth / 2;
-                        const dist = Math.abs(cCenter - viewportCenter);
-                        if (dist < minDist) { minDist = dist; nearestIdx = i; }
-                      });
-                      setCurrentIdx(nearestIdx);
-                    }
-                  } catch {}
-                  if (AUTO_CENTER) centerNearest();
-                }, 220);
-              }
-            }}
-          
-          >
-            <div className="carousel-track">
+          <div className="carousel-viewport" data-dragging={isDragging ? 'true' : 'false'}>
+            <Swiper
+              onSwiper={(s) => { swiperRef.current = s; }}
+              key={isMobile ? 'swiper-mobile' : 'swiper-desktop'}
+              effect="coverflow"
+              grabCursor={true}
+              centeredSlides={true}
+              slidesPerView={'auto'}
+              spaceBetween={isMobile ? 16 : 0}
+              coverflowEffect={{
+                rotate: isMobile ? 36 : 22,
+                stretch: isMobile ? 0 : -50,
+                depth: isMobile ? 80 : 60,
+                modifier: 1,
+                slideShadows: true,
+              }}
+              pagination={true}
+              modules={[EffectCoverflow, Pagination]}
+              className="mySwiper"
+              onTouchStart={(swiper) => {
+                const touch = swiper.touches?.current || swiper.touches?.startX ? { x: swiper.touches.startX, y: swiper.touches.startY } : null;
+                if (touch) {
+                  touchStartRef.current = touch;
+                }
+                setIsDragging(false);
+                if (dragResetTimerRef.current) clearTimeout(dragResetTimerRef.current);
+              }}
+              onTouchMove={(swiper) => {
+                const startX = touchStartRef.current.x;
+                const startY = touchStartRef.current.y;
+                const currentX = swiper.touches?.currentX ?? swiper.touches?.current?.x ?? 0;
+                const currentY = swiper.touches?.currentY ?? swiper.touches?.current?.y ?? 0;
+                const moved = Math.max(Math.abs(currentX - startX), Math.abs(currentY - startY));
+                if (moved > 8) setIsDragging(true);
+              }}
+              onTouchEnd={() => {
+                if (dragResetTimerRef.current) clearTimeout(dragResetTimerRef.current);
+                dragResetTimerRef.current = setTimeout(() => setIsDragging(false), 180);
+              }}
+              onSlideChange={(swiper) => {
+                setCurrentIdx(swiper.realIndex);
+                setIsDragging(false);
+              }}
+            >
               {certificates.map((cert, idx) => (
-                <CertificateCard key={idx} {...cert} />
+                <SwiperSlide key={idx} style={{ width: isMobile ? 'auto' : '250px' }}>
+                  <CertificateCard {...cert} />
+                </SwiperSlide>
               ))}
-            </div>
+            </Swiper>
           </div>
 
           <button
             className="carousel-btn right"
-            onClick={() => {
-              // suppress auto-centering briefly so the click-driven scroll finishes
-              suppressAutoCenterRef.current = true;
-              if (suppressTimerRef.current) clearTimeout(suppressTimerRef.current);
-              suppressTimerRef.current = setTimeout(() => { suppressAutoCenterRef.current = false; suppressTimerRef.current = null; }, 600);
-
-              const el = trackRef.current; if (!el) return;
-              // scroll to next card
-              const track = el.querySelector('.carousel-track'); if (!track) return;
-              const children = Array.from(track.children); if (children.length === 0) return;
-              const viewportCenter = el.scrollLeft + el.clientWidth / 2;
-              let nearestIdx = 0; let minDist = Infinity;
-              children.forEach((c, i) => {
-                const cCenter = c.offsetLeft + c.offsetWidth / 2;
-                const dist = Math.abs(cCenter - viewportCenter);
-                if (dist < minDist) { minDist = dist; nearestIdx = i; }
-              });
-              const targetIdx = Math.min(children.length - 1, nearestIdx + 1);
-              const target = children[targetIdx];
-              if (target) {
-                const left = Math.max(0, target.offsetLeft + target.offsetWidth/2 - el.clientWidth/2);
-                el.scrollTo({ left, behavior: 'smooth' });
-                setCurrentIdx(targetIdx);
-              }
-            }}
+            onClick={() => swiperRef.current && swiperRef.current.slideNext()}
             aria-label="Scroll right"
           ><span className="icon"><FaChevronRight /></span></button>
         </div>

@@ -1,6 +1,7 @@
 {
   "hosting": {
     "public": "dist",
+    "site": "arthur-alves",
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       { "source": "**", "destination": "/index.html" }

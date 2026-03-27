@@ -1,10 +1,10 @@
 .certificate-wrapper {
   perspective: 1000px;
   width: 100%;
-  max-width: 350px;
-  /* use aspect-ratio to keep card proportions and avoid layout jumps */
-  aspect-ratio: 4 / 3;
-  min-height: 260px;
+  max-width: 300px;
+  /* use a taller ratio so the certificate has more vertical breathing room */
+  aspect-ratio: 3 / 4;
+  min-height: 340px;
   /* manter wrapper sem padding para que o cartão interno ocupe o espaço corretamente */
   padding: 0;
   box-sizing: border-box;
@@ -26,6 +26,11 @@
   will-change: transform;
 }
 
+.certificate-card.no-flip {
+  transform: none !important;
+  cursor: default;
+}
+
 /* inner element handles the 3D flip */
 .certificate-inner {
   position: relative;
@@ -37,6 +42,14 @@
 .certificate-card.flipped {
   transform: rotateY(180deg) translateY(-8px);
   z-index: 12;
+}
+
+.certificate-card.no-flip .certificate-front {
+  pointer-events: auto;
+}
+
+.certificate-card.no-flip .certificate-back {
+  display: none;
 }
 
 .certificate-front,
@@ -355,23 +368,29 @@
 
 @media (max-width: 768px) {
   .certificate-wrapper {
-    max-width: 340px;
-    aspect-ratio: 4 / 3;
-    min-height: 184px;
+    max-width: 100%;
+    aspect-ratio: 3 / 4;
+    min-height: 360px;
   }
 
   .certificate-front,
   .certificate-back {
-    padding: 0.9rem;
+    padding: 1.1rem;
   }
 
   .certificate-image {
     width: 100%;
-    height: 34%;
-    margin-bottom: 0.4rem;
+    height: 42%;
+    margin-bottom: 0.6rem;
   }
 
   .issuer-logo {
     font-size: 2.6rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .certificate-wrapper {
+    max-width: 280px;
   }
 }

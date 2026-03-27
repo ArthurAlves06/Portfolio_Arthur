@@ -118,7 +118,11 @@
       "placeholderSubject": "Assunto do email",
       "labelMessage": "Mensagem",
       "placeholderMessage": "Sua mensagem",
-      "submit": "Enviar Mensagem"
+      "submit": "Enviar Mensagem",
+      "sending": "Enviando...",
+      "success": "Mensagem enviada com sucesso!",
+      "error": "Erro ao enviar mensagem. Tente novamente.",
+      "sendAnother": "Enviar outra mensagem"
     }
   },
   "certificate": {

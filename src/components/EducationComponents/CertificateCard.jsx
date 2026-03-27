@@ -6,7 +6,7 @@ import { AiOutlinePython } from 'react-icons/ai';
 import { LuBrainCircuit } from 'react-icons/lu';
 import { TbWorld } from 'react-icons/tb';
 
-const CertificateCard = ({ title, issuer, date, skills = [], certificateImage, link }) => {
+const CertificateCard = ({ title, issuer, date, skills = [], certificateImage, link, disableFlip = false }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [showAllSkills, setShowAllSkills] = useState(false);
   const { t } = useTranslation();
@@ -17,6 +17,8 @@ const CertificateCard = ({ title, issuer, date, skills = [], certificateImage, l
   const extraCount = extraSkills.length;
 
   const toggle = (e) => {
+    if (disableFlip) return;
+
     // evitar scroll ao pressionar Space
     if (e?.type === 'keydown' && e.code === 'Space') e.preventDefault();
 
@@ -40,12 +42,12 @@ const CertificateCard = ({ title, issuer, date, skills = [], certificateImage, l
   return (
     <div className="certificate-wrapper">
       <div
-        className={`certificate-card ${isFlipped ? 'flipped' : ''}`}
-        onClick={toggle}
-        role="button"
-        tabIndex={0}
-        aria-pressed={isFlipped}
-        onKeyDown={(e) => { if (e.key === 'Enter' || e.code === 'Space') toggle(e); }}
+        className={`certificate-card ${disableFlip ? 'no-flip' : ''} ${isFlipped ? 'flipped' : ''}`}
+        onClick={disableFlip ? undefined : toggle}
+        role={disableFlip ? undefined : 'button'}
+        tabIndex={disableFlip ? -1 : 0}
+        aria-pressed={disableFlip ? undefined : isFlipped}
+        onKeyDown={disableFlip ? undefined : (e) => { if (e.key === 'Enter' || e.code === 'Space') toggle(e); }}
       >
         <div className="certificate-front">
           <div className="certificate-header">
@@ -92,7 +94,8 @@ const CertificateCard = ({ title, issuer, date, skills = [], certificateImage, l
           </div>
         </div>
 
-        <div className="certificate-back">
+        {!disableFlip && (
+          <div className="certificate-back">
           <h3>{t('certificate.learned')}</h3>
           {link && (
             <div className="back-actions">
@@ -127,7 +130,8 @@ const CertificateCard = ({ title, issuer, date, skills = [], certificateImage, l
             </button>
           )}
           <p className="tap-hint">{t('certificate.tapHintBack')}</p>
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
