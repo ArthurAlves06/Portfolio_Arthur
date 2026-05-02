@@ -123,6 +123,24 @@
   flex: 0 0 40px;
 }
 
+/* n8n uses a full-image asset (pink rounded square). Override sizing here */
+.item-icon.icon-n8n {
+  /* match default item-icon size so icons are visually consistent */
+  width: 40px;
+  height: 40px;
+  border-radius: 10px; /* same radius as other icons */
+  background: #f24f74; /* pink rounded square */
+  color: #fff; /* svg uses currentColor for stroke */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.item-icon.icon-n8n svg {
+  width: 60%;
+  height: 60%;
+}
+
 .item-text { display: flex; flex-direction: column; }
 .item-title { font-weight: 700; color: var(--text); font-size: 1rem; }
 .item-desc { font-size: 0.9rem; color: var(--muted); }
@@ -141,6 +159,9 @@
 .item-icon.icon-github { background: #181717; color: #fff; }
 .item-icon.icon-embedded { background: linear-gradient(90deg,#4b5563 0%,#6b7280 100%); color: #fff; }
 .item-icon.icon-default { background: rgba(31,52,188,0.06); color: var(--primary); }
+/* brand colors */
+.item-icon.icon-n8n { background: #f24f74; color: #fff; }
+.item-icon.icon-colab { background: linear-gradient(90deg,#F9AB00 0%,#FF7043 100%); color: #fff; }
 
 /* responsivo */
 @media (max-width: 1000px) {

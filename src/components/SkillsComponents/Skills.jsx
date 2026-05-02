@@ -1,9 +1,12 @@
 import React from 'react';
 import './SkillsStyle.css';
-import { FaReact, FaJsSquare, FaHtml5, FaCss3Alt, FaJava, FaGithub, FaMicrochip, FaCode } from 'react-icons/fa';
+import { FaReact, FaJsSquare, FaHtml5, FaCss3Alt, FaJava, FaGithub, FaMicrochip, FaCode, FaCloud } from 'react-icons/fa';
 import { RiToolsFill } from 'react-icons/ri';
 import { SiPython, SiC, SiFirebase, SiFigma } from 'react-icons/si';
 import { useTranslation } from 'react-i18next';
+import N8nIcon from './icons/N8nIcon';
+
+
 
 const SkillGroup = ({ icon, title, items }) => {
   const getMeta = (label) => {
@@ -20,6 +23,8 @@ const SkillGroup = ({ icon, title, items }) => {
     if (key.includes('firebase')) return { Icon: SiFirebase, desc: 'Backend e serviços em nuvem', cls: 'icon-firebase' };
     if (key.includes('github')) return { Icon: FaGithub, desc: 'Controle de versão', cls: 'icon-github' };
     if (key.includes('microchip') || key.includes('c language')) return { Icon: FaMicrochip, desc: 'Sistemas embarcados', cls: 'icon-embedded' };
+    if (key.includes('n8n')) return { Icon: N8nIcon, desc: 'Automação de workflows', cls: 'icon-n8n' };
+    if (key.includes('colab') || (key.includes('google') && key.includes('colab'))) return { Icon: FaCloud, desc: 'Notebooks colaborativos', cls: 'icon-colab' };
     return { Icon: FaCode, desc: 'Tecnologia relacionada', cls: 'icon-default' };
   };
 
@@ -32,7 +37,11 @@ const SkillGroup = ({ icon, title, items }) => {
           const { Icon, desc, cls } = getMeta(it);
           return (
             <li key={i} className="group-item">
-              <span className={`item-icon ${cls}`}><Icon size={18} /></span>
+              {cls === 'icon-n8n' ? (
+                <span className={`item-icon ${cls}`}><N8nIcon width={28} height={28} /></span>
+              ) : (
+                <span className={`item-icon ${cls}`}><Icon size={18} /></span>
+              )}
               <div className="item-text">
                 <span className="item-title">{it}</span>
                 <span className="item-desc">{desc}</span>
@@ -64,7 +73,7 @@ const Skills = () => {
       icon: <RiToolsFill size={28} />,
       items: [
         'Figma', 'VS Code', 'Firebase',
-        'GitHub'
+        'GitHub', 'n8n', 'Google Colab'
       ]
     }
   ];

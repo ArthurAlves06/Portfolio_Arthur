@@ -4,6 +4,7 @@ import "./index.css";
 import App from './App.jsx'
 import { ThemeProvider } from './contexts/ThemeContext.jsx'; // <-- adicionado
 import './i18n'; // initialize i18n
+import { /* trackEvent, seedAnalyticsDemo, refreshAnalyticsEvents */ } from './utils/analytics';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -12,3 +13,6 @@ createRoot(document.getElementById('root')).render(
     </ThemeProvider>
   </StrictMode>,
 )
+
+// Expose helper for quick manual testing in development only
+// Debug helpers removed — no dev globals exposed

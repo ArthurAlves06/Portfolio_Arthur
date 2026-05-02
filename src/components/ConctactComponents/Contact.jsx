@@ -2,15 +2,21 @@ import React, { useState } from 'react';
 import './ContactStyle.css';
 import { FiMail, FiPhone, FiMapPin, FiCheckCircle } from 'react-icons/fi';
 import { useTranslation } from 'react-i18next';
+import { trackEvent } from '../../utils/analytics';
 
 const Contact = () => {
   const { t } = useTranslation();
+  const MESSAGE_MAX = 800;
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
   const [sending, setSending] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if (name === 'message' && value.length > MESSAGE_MAX) return; // safeguard
+    setForm({ ...form, [name]: value });
+  };
 
   const handleResetMessage = () => {
     setSubmitted(false);
@@ -38,6 +44,18 @@ const Contact = () => {
         throw new Error('Falha ao enviar o formulário');
       }
 
+      trackEvent('lead_captured', {
+        name: form.name,
+        email: form.email,
+        subject: form.subject,
+      });
+      trackEvent('message_sent', {
+        name: form.name,
+        email: form.email,
+        subject: form.subject,
+        messageLength: form.message.length,
+      });
+
       setSubmitted(true);
       setForm({ name: '', email: '', subject: '', message: '' });
     } catch (err) {
@@ -45,6 +63,24 @@ const Contact = () => {
       setErrorMessage(t('contact.form.error') || 'Erro ao enviar mensagem.');
     } finally {
       setSending(false);
+    }
+  };
+
+  const mailTo = 'arthurdesouzaalves06@gmail.com';
+  const handleMailClick = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    trackEvent('contact_click', { channel: 'email', value: mailTo });
+    try {
+      window.location.href = `mailto:${mailTo}`;
+    } catch (err) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(mailTo);
+        // eslint-disable-next-line no-alert
+        alert(t('contact.emailCopied') || 'E-mail copiado para a área de transferência');
+      } else {
+        // eslint-disable-next-line no-alert
+        alert(mailTo);
+      }
     }
   };
 
@@ -60,7 +96,7 @@ const Contact = () => {
           <p className="contact-intro-desc">{t('contact.introDesc')}</p>
 
           <div className="footer-contacts">
-            <a className="footer-contact-item" href="mailto:arthurdesouzaalves06@gmail.com">
+            <a className="footer-contact-item" href="mailto:arthurdesouzaalves06@gmail.com" onClick={handleMailClick}>
               <span className="icon"><FiMail /></span>
               <div className="meta">
                 <small>{t('contact.email')}</small>
@@ -129,7 +165,19 @@ const Contact = () => {
 
             <div className="input-group">
               <label>{t('contact.form.labelMessage')}</label>
-              <textarea name="message" cols="30" rows="7" placeholder={t('contact.form.placeholderMessage')} required value={form.message} onChange={handleChange}></textarea>
+              <textarea
+                name="message"
+                cols="30"
+                rows="7"
+                placeholder={t('contact.form.placeholderMessage')}
+                required
+                value={form.message}
+                onChange={handleChange}
+                maxLength={MESSAGE_MAX}
+              />
+              <div className={`char-counter ${form.message.length > MESSAGE_MAX * 0.9 ? 'warn' : ''}`}>
+                {form.message.length}/{MESSAGE_MAX}
+              </div>
             </div>
 
             <button type="submit" disabled={sending} className={`btn contact-submit ${sending ? 'is-loading' : ''}`}>

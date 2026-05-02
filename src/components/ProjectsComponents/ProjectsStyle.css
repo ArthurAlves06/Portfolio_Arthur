@@ -113,6 +113,7 @@
   color: #fff;
   text-align: center;
   max-width: 86%;
+  margin-top: 18px;
 }
 
 .hover-langs {
@@ -122,6 +123,38 @@
   justify-content: center;
   margin-bottom: 14px;
 }
+
+.project-desc {
+  font-size: 14px;
+  margin: 10px auto 14px;
+  color: rgba(255,255,255,0.95);
+  max-width: 92%;
+}
+
+.tools-list {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 18px;
+}
+
+.tool-item {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.04);
+  font-size: 13px;
+  color: #fff;
+}
+
+.tool-icon { width: 18px; height: 18px; color: var(--primary, #58a6ff); }
+
+/* Increase visibility of SVG icons */
+.tool-item svg, .btn svg { color: var(--primary, #58a6ff); }
+.btn { color: #fff; }
 
 .lang-pill {
   background: rgba(255,255,255,0.08);

@@ -7,8 +7,10 @@ import 'swiper/css/effect-coverflow';
 import 'swiper/css/pagination';
 import { EffectCoverflow, Pagination } from 'swiper/modules';
 import CertificateCard from './CertificateCard';
+import adminData from '../../utils/adminData';
 import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
+import { trackEvent } from '../../utils/analytics';
 
 const EducationItem = ({ date, title, institution, description }) => (
   <div className="education-item">
@@ -34,7 +36,8 @@ const Education = () => {
   const dragResetTimerRef = useRef(null);
   // toggle automatic centering behavior
   const AUTO_CENTER = false; // set to true to re-enable auto-centering
-  const certificates = t('education.certificates', { returnObjects: true }) || [];
+  const i18nCerts = t('education.certificates', { returnObjects: true }) || [];
+  const certificates = (adminData.getStoredCertificates() || []).length > 0 ? adminData.getStoredCertificates() : i18nCerts;
   const [currentIdx, setCurrentIdx] = useState(0);
 
   useEffect(() => {
@@ -158,7 +161,35 @@ const Education = () => {
             aria-label="Scroll left"
           ><span className="icon"><FaChevronLeft /></span></button>
 
-          <div className="carousel-viewport" data-dragging={isDragging ? 'true' : 'false'}>
+          <div
+            className="carousel-viewport"
+            ref={trackRef}
+            data-dragging={isDragging ? 'true' : 'false'}
+            onPointerDown={(e) => {
+              touchStartRef.current = { x: e.clientX, y: e.clientY };
+              setIsDragging(false);
+              if (dragResetTimerRef.current) clearTimeout(dragResetTimerRef.current);
+            }}
+            onPointerMove={(e) => {
+              const startX = touchStartRef.current.x || 0;
+              const startY = touchStartRef.current.y || 0;
+              const moved = Math.max(Math.abs(e.clientX - startX), Math.abs(e.clientY - startY));
+              if (moved > 8) setIsDragging(true);
+            }}
+            onPointerUp={() => {
+              if (dragResetTimerRef.current) clearTimeout(dragResetTimerRef.current);
+              dragResetTimerRef.current = setTimeout(() => setIsDragging(false), 180);
+            }}
+            onPointerCancel={() => {
+              if (dragResetTimerRef.current) clearTimeout(dragResetTimerRef.current);
+              dragResetTimerRef.current = setTimeout(() => setIsDragging(false), 180);
+            }}
+            onPointerLeave={() => {
+              /* when pointer leaves, ensure dragging resets shortly after */
+              if (dragResetTimerRef.current) clearTimeout(dragResetTimerRef.current);
+              dragResetTimerRef.current = setTimeout(() => setIsDragging(false), 180);
+            }}
+          >
             <Swiper
               onSwiper={(s) => { swiperRef.current = s; }}
               key={isMobile ? 'swiper-mobile' : 'swiper-desktop'}
@@ -204,7 +235,33 @@ const Education = () => {
             >
               {certificates.map((cert, idx) => (
                 <SwiperSlide key={idx} style={{ width: isMobile ? 'auto' : '250px' }}>
-                  <CertificateCard {...cert} />
+                  <CertificateCard
+                    {...cert}
+                    isActive={currentIdx === idx}
+                    onNavigate={() => {
+                      try {
+                        trackEvent('certificate_click', {
+                          certificateTitle: cert.title,
+                          issuer: cert.issuer,
+                          action: 'navigate',
+                        });
+                        suppressAutoCenterRef.current = true;
+                        if (swiperRef.current && typeof swiperRef.current.slideTo === 'function') {
+                          swiperRef.current.slideTo(idx);
+                        }
+                        setCurrentIdx(idx);
+                        if (suppressTimerRef.current) clearTimeout(suppressTimerRef.current);
+                        suppressTimerRef.current = setTimeout(() => { suppressAutoCenterRef.current = false; }, 600);
+                      } catch {}
+                    }}
+                    onTrackClick={(details) => {
+                      trackEvent('certificate_click', {
+                        certificateTitle: details.title,
+                        issuer: details.issuer,
+                        action: details.action,
+                      });
+                    }}
+                  />
                 </SwiperSlide>
               ))}
             </Swiper>

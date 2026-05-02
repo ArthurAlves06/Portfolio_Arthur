@@ -8,6 +8,24 @@ import TypewriterChange from './TypewriterChange';
 
 const Hero = () => {
   const { t } = useTranslation();
+  const mailTo = 'arthurdesouzaalves06@gmail.com';
+
+  const handleMailClick = (e) => {
+    if (e && e.preventDefault) e.preventDefault();
+    try {
+      window.location.href = `mailto:${mailTo}`;
+    } catch (err) {
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(mailTo);
+        // fallback message (i18n optional)
+        // eslint-disable-next-line no-alert
+        alert(t('contact.emailCopied') || 'E-mail copiado para a área de transferência');
+      } else {
+        // eslint-disable-next-line no-alert
+        alert(mailTo);
+      }
+    }
+  };
 
   return (
     <section className="home" id="home">
@@ -22,13 +40,13 @@ const Hero = () => {
         </p>
         <div className="social-icons">
           <a href="https://github.com/ArthurAlves06" target="_blank" rel="noopener noreferrer" aria-label="GitHub" className="social-btn">
-            <FaGithub size={20} />
+            <span className="social-inner"><FaGithub size={20} /></span>
           </a>
           <a href="https://www.linkedin.com/in/arthur-de-souza-alves-449812306" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="social-btn">
-            <FaLinkedin size={20} />
+            <span className="social-inner"><FaLinkedin size={20} /></span>
           </a>
-          <a href="mailto:arthurdesouzaalves06@gmail.com" aria-label="Email" className="social-btn">
-            <FiMail size={20} />
+          <a href="mailto:arthurdesouzaalves06@gmail.com" aria-label="Email" className="social-btn" onClick={handleMailClick}>
+            <span className="social-inner"><FiMail size={20} /></span>
           </a>
         </div>
         <a href="#contact" className="btn">{t('hero.contact')}</a>

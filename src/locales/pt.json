@@ -79,6 +79,21 @@
         ],
         "link": "https://cursos.alura.com.br/certificate/4415759a-92f6-41d8-873a-ec094598fc52?lang=pt_BR"
       }
+      ,
+      {
+        "title": "PENTEST: explorando vulnerabilidades em aplicações web",
+        "issuer": "Alura",
+        "date": "2026",
+        "skills": [
+          "OWASP Top 10",
+          "XSS e SQL Injection",
+          "Falhas de autenticação e autorização",
+          "Fraquezas em gerenciamento de sessão",
+          "Uso de Burp Suite e scanners",
+          "Técnicas de teste manual"
+        ],
+        "link": ""
+      }
     ]
     ,
     "items": [

@@ -283,6 +283,16 @@
   resize: vertical;
 }
 
+/* Character counter under textarea */
+.char-counter {
+  text-align: right;
+  color: var(--muted);
+  font-size: 0.95rem;
+  margin-top: -0.4rem;
+  margin-bottom: 1rem;
+}
+.char-counter.warn { color: #f59e0b; }
+
 /* labels e organização */
 .contact-right .contact-form label {
   display: block;
@@ -361,4 +371,35 @@
     width: 100%;
     padding: 1.2rem;
   }
+}
+
+/* Prevent long words or untranslated strings from overflowing the viewport */
+.contact .heading,
+.contact .heading span,
+.contact-left .contact-intro,
+.contact-left .contact-intro-desc,
+.footer-contact-item .meta span,
+.footer-contact-item .meta small,
+.contact-left .contact-intro-desc,
+.contact-right .contact-form,
+.contact .footer-contacts {
+  overflow-wrap: break-word;
+  word-break: break-word;
+  hyphens: auto;
+  max-width: 100%;
+}
+
+/* More focused rules so contact labels and values can wrap gracefully without
+   changing layout or truncating important information. */
+.footer-contact-item .meta {
+  max-width: calc(100% - 56px); /* leave space for the icon */
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.footer-contact-item .meta span {
+  font-size: clamp(0.9rem, 2.2vw, 1.05rem);
+  display: block;
+}
+.footer-contact-item .meta small {
+  display: block;
 }

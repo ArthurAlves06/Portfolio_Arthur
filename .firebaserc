@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "portifolio-arthur-41234"
-  }
+    "default": "portifolio-arthur-41234",
+    "main": "portifolio-arthur-41234"
+  },
+  "targets": {},
+  "etags": {}
 }

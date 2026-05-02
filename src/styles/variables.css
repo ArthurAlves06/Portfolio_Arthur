@@ -38,26 +38,27 @@
 
 /* Tema escuro "mais claro" (preto menos intenso) */
 body.dark-soft {
-  --bg: #0a0a0a;
-  --surface: #121216;
-  --text: #efefef;
-  --muted: #c7c7c7;
+  --bg: #0f1216; /* slightly lighter than pure black */
+  --surface: #15161a; /* lightened surface for softer contrast */
+  --text: #e9eef0; /* softer white for reduced contrast */
+  --muted: #bfc6c9;
 
   /* cartões escuros no tema dark-soft */
-  --card-bg: #0f0f12;
-  --border-weak: rgba(255,255,255,0.03);
-  --border-strong: rgba(255,255,255,0.06);
+  --card-bg: #0e0f12;
+  --border-weak: rgba(255,255,255,0.02);
+  --border-strong: rgba(255,255,255,0.04);
 
   /* mantém defaults acima para header */
   /* Button specific overrides for dark theme */
-  --btn-bg: #0a0a0a;
+  --btn-bg: #0f1216;
   --btn-text: var(--primary);
   --btn-border: var(--primary);
 
-  --card-shadow: 0 10px 24px rgba(0, 0, 0, 0.26);
-  --card-shadow-hover: 0 14px 30px rgba(31, 52, 188, 0.16);
-  --card-shadow-soft: 0 8px 18px rgba(0, 0, 0, 0.18);
-  --icon-shadow: 0 8px 20px rgba(31,52,188,0.16);
+  /* Softer shadows for dark theme */
+  --card-shadow: 0 8px 18px rgba(2, 6, 23, 0.06);
+  --card-shadow-hover: 0 10px 22px rgba(31, 52, 188, 0.08);
+  --card-shadow-soft: 0 6px 14px rgba(2, 6, 23, 0.04);
+  --icon-shadow: 0 6px 16px rgba(31,52,188,0.08);
 }
 
 /* Tema claro */

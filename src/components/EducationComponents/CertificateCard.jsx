@@ -4,9 +4,9 @@ import { useTranslation } from 'react-i18next';
 import { PiMedalBold } from 'react-icons/pi';
 import { AiOutlinePython } from 'react-icons/ai';
 import { LuBrainCircuit } from 'react-icons/lu';
-import { TbWorld } from 'react-icons/tb';
+import { TbWorld, TbCloudLock } from 'react-icons/tb';
 
-const CertificateCard = ({ title, issuer, date, skills = [], certificateImage, link, disableFlip = false }) => {
+const CertificateCard = ({ title, issuer, date, skills = [], certificateImage, link, disableFlip = false, isActive = true, onNavigate = null, onTrackClick = null }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const [showAllSkills, setShowAllSkills] = useState(false);
   const { t } = useTranslation();
@@ -19,6 +19,24 @@ const CertificateCard = ({ title, issuer, date, skills = [], certificateImage, l
   const toggle = (e) => {
     if (disableFlip) return;
 
+    // track only when flipping to reveal the certificate (not when unflipping)
+    if (!isFlipped && isActive && typeof onTrackClick === 'function') {
+      onTrackClick({
+        title,
+        issuer,
+        date,
+        isActive,
+        action: 'flip',
+      });
+    }
+
+    // if this card isn't the active/centered slide, navigate to it instead of flipping
+    try {
+      if (!isActive) {
+        if (typeof onNavigate === 'function') onNavigate();
+        return;
+      }
+    } catch {}
     // evitar scroll ao pressionar Space
     if (e?.type === 'keydown' && e.code === 'Space') e.preventDefault();
 
@@ -65,6 +83,7 @@ const CertificateCard = ({ title, issuer, date, skills = [], certificateImage, l
                     const key = title ? title.toLowerCase() : '';
                     let iconClass = '';
                     if (key.includes('python')) iconClass = 'icon-python';
+                    else if (key.includes('pentest') || key.includes('vulner') || key.includes('vuln')) iconClass = 'icon-pentest';
                     else if (key.includes('http')) iconClass = 'icon-http';
                     else if (key.includes('pensamento') || key.includes('comput')) iconClass = 'icon-computational';
                     else iconClass = 'icon-default';
@@ -73,6 +92,8 @@ const CertificateCard = ({ title, issuer, date, skills = [], certificateImage, l
                       <span className={`issuer-logo ${iconClass}`}>
                         {key.includes('python') ? (
                           <AiOutlinePython size={36} />
+                        ) : (key.includes('pentest') || key.includes('vulner') || key.includes('vuln')) ? (
+                          <TbCloudLock size={36} />
                         ) : key.includes('http') ? (
                           <TbWorld size={36} />
                         ) : (key.includes('pensamento') || key.includes('comput')) ? (

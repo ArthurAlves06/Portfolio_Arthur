@@ -15,6 +15,8 @@ const Header = () => {
 
   const { t, i18n } = useTranslation();
 
+  const LANG_ANIM_MS = 540; // must match CSS --lang-anim
+
   useEffect(() => {
     const ids = ['home', 'projects', 'skills', 'education', 'contact'];
     const observer = new IntersectionObserver(
@@ -74,11 +76,37 @@ const Header = () => {
           <button
             className={`lang-icon ${isSwitchingLang ? 'is-switching' : ''}`}
             onClick={() => {
-              setIsSwitchingLang(true);
+              const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
               const next = i18n.language === 'en' ? 'pt' : 'en';
-              i18n.changeLanguage(next);
-              localStorage.setItem('lang', next);
-              window.setTimeout(() => setIsSwitchingLang(false), 220);
+
+              if (prefersReduced) {
+                // Respect reduced-motion: change immediately without animation
+                setIsSwitchingLang(true);
+                i18n.changeLanguage(next).then(() => {
+                  localStorage.setItem('lang', next);
+                  setIsSwitchingLang(false);
+                });
+                return;
+              }
+
+              // Add a class to the app root to trigger a crossfade animation
+              const root = document.getElementById('root');
+              if (root) root.classList.add('lang-crossfade');
+
+              setIsSwitchingLang(true);
+
+              // Change language at mid-animation for smooth content swap
+              window.setTimeout(() => {
+                i18n.changeLanguage(next).then(() => {
+                  localStorage.setItem('lang', next);
+                });
+              }, LANG_ANIM_MS / 2);
+
+              // Clean up after full animation completes
+              window.setTimeout(() => {
+                if (root) root.classList.remove('lang-crossfade');
+                setIsSwitchingLang(false);
+              }, LANG_ANIM_MS + 20);
             }}
             title={i18n.language === 'en' ? 'Switch to Português' : 'Switch to English'}
             aria-label="Toggle language"

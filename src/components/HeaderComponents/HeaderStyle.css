@@ -9,6 +9,20 @@ header {
   transition: background .28s ease, border-bottom .28s ease, padding .2s ease;
 }
 
+/* Allow pointer-events to pass through transparent areas of the header
+   while keeping interactive children (nav, controls, logo) clickable. */
+header {
+  pointer-events: none;
+}
+
+/* Interactive header children must opt-in to pointer events */
+.header-inner,
+header nav,
+.logo,
+.header-controls {
+  pointer-events: auto;
+}
+
 /* esconder header quando classe 'hidden' aplicada (rolando para baixo) */
 /* quando a classe 'hidden' é aplicada por scroll descendente:
    - esconder o logo
@@ -97,11 +111,11 @@ header nav a.active {
 header nav.lang-switching {
   opacity: 0.78;
   transform: translateY(1px);
-  transition: opacity 220ms ease, transform 220ms ease;
+  transition: opacity var(--lang-anim-short) ease, transform var(--lang-anim-short) ease;
 }
 
 header nav.lang-switching a {
-  transition: opacity 220ms ease, transform 220ms ease, color 220ms ease, border-bottom-color 220ms ease;
+  transition: opacity var(--lang-anim-short) ease, transform var(--lang-anim-short) ease, color var(--lang-anim-short) ease, border-bottom-color var(--lang-anim-short) ease;
 }
 
 /* botão simples para alternar tema */
@@ -134,7 +148,7 @@ header nav.lang-switching a {
   align-items: center;
   gap: 0.4rem;
   font-size: 1rem;
-  transition: transform 220ms ease, background 220ms ease, color 220ms ease, opacity 220ms ease, box-shadow 220ms ease;
+  transition: transform var(--lang-anim-short) ease, background var(--lang-anim-short) ease, color var(--lang-anim-short) ease, opacity var(--lang-anim-short) ease, box-shadow var(--lang-anim-short) ease;
 }
 .lang-icon:hover {
   transform: translateY(-3px);
@@ -150,6 +164,78 @@ header nav.lang-switching a {
 
 /* Hide the language code visually on small screens but keep accessible */
 .lang-code { font-size: 0.95rem; }
+
+/* Clean, subtle animation when language toggles:
+   - the globe icon does a short rotation
+   - the language code fades/Slides briefly
+   - total duration matches the JS timeout (220ms)
+*/
+.lang-icon .lang-code {
+  display: inline-block;
+  transform-origin: center;
+  transition: transform var(--lang-anim-short) var(--lang-anim-ease), opacity var(--lang-anim-short) ease;
+}
+/* removed spin animation: keep icon static during language switch */
+.lang-icon.is-switching svg {
+  animation: none !important;
+  transform: none !important;
+}
+.lang-icon.is-switching .lang-code {
+  transform: translateY(-6px) scale(0.94);
+  opacity: 0;
+}
+
+/* keyframes removed: lang-rotate no longer used */
+
+/* Respect user preference for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .lang-icon, .lang-icon .lang-code, .lang-icon svg {
+    transition: none !important;
+    animation: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+  }
+}
+
+/* Site-wide crossfade when switching language. Applied to #root as class `lang-crossfade` */
+:root {
+  --lang-anim: 540ms; /* crossfade duration - increased for extra smoothness */
+  --lang-anim-short: 320ms; /* short interactions (icon/text) */
+  --lang-anim-ease: cubic-bezier(.22,.9,.28,1);
+}
+
+#root.lang-crossfade {
+  animation: lang-crossfade var(--lang-anim) var(--lang-anim-ease) both;
+}
+
+@keyframes lang-crossfade {
+  0% {
+    opacity: 1;
+    filter: blur(0px);
+    transform: none;
+  }
+  45% {
+    opacity: 0;
+    filter: blur(3px);
+    transform: scale(0.998);
+  }
+  55% {
+    opacity: 0;
+    filter: blur(3px);
+    transform: scale(0.998);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0px);
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #root.lang-crossfade {
+    animation: none !important;
+  }
+}
 
 /* novo container que agrupa idioma + tema e fixa mais à direita */
 .header-controls {

@@ -9,7 +9,7 @@ export default function TypewriterChange({ className }) {
   const [isDeleting, setIsDeleting] = useState(false);
   const mounted = useRef(true);
 
-  // compute min width based on longest phrase
+  // compute min width based on longest phrase (kept for possible future use)
   const maxLen = Math.max(...phrases.map(p => p.length));
 
   useEffect(() => {
@@ -47,16 +47,25 @@ export default function TypewriterChange({ className }) {
   }, [display, isDeleting, phraseIndex]);
 
   return (
-    <span
-      className={className}
-      style={{
-        display: 'inline-block',
-        verticalAlign: 'baseline',
-        minWidth: `${maxLen}ch`,
-        whiteSpace: 'nowrap'
-      }}
-    >
-      <span className="typewriter-text">{display}</span>
+    <span className={className} style={{ display: 'inline-block', verticalAlign: 'baseline' }}>
+      {/* Split the current display into everything before the last word and the last word
+          so we can render the last word on a centered line (e.g. "Cybersecurity"). */}
+      {
+        (() => {
+          const current = phrases[phraseIndex] || '';
+          const lastSpace = current.lastIndexOf(' ');
+          const splitIndex = lastSpace >= 0 ? lastSpace + 1 : current.length;
+          const before = display.substring(0, splitIndex);
+          const after = display.substring(splitIndex);
+
+          return (
+            <span className="typewriter-text">
+              <span className="typewriter-before">{before}</span>
+              <span className="typewriter-lastword">{after}</span>
+            </span>
+          );
+        })()
+      }
     </span>
   );
 }

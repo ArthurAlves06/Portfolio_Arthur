@@ -30,12 +30,12 @@
 /* ...existing code... */
 
 body.dark-soft {
-  --bg: #0a0a0a;
-  --surface: #121216;
-  --text: #efefef;
-  --muted: #c7c7c7;
+    --bg: #0f1216; /* slightly lighter than pure black */
+    --surface: #15161a; /* lightened surface for softer contrast */
+    --text: #e9eef0; /* softer white for reduced contrast */
+    --muted: #bfc6c9;
 
-  /* mantém defaults acima para header */
+    /* mantém defaults acima para header */
 }
 
 /* Tema claro */
@@ -155,20 +155,77 @@ body.light {
     border: 1px solid var(--social-border);
     font-size: 1.6rem;
     border-radius: 50%;
-    transition: transform 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+    transition: background-color 0.25s ease, box-shadow 0.25s ease;
     color: var(--text);
+    overflow: visible; /* allow inner to animate without changing anchor box */
+    cursor: pointer;
 }
 .social-icons .social-btn svg {
     display: block;
     width: 1.6rem;
     height: 1.6rem;
     color: var(--text);
+    transition: transform 160ms cubic-bezier(.2,.9,.2,1), color 160ms ease;
+    transform-origin: center center;
 }
+
+/* animate the inner element so the anchor's clickable area doesn't shift */
+.social-icons .social-btn .social-inner {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    transition: transform 160ms cubic-bezier(.2,.9,.2,1), opacity 160ms ease;
+    transform-origin: center center;
+    will-change: transform, opacity;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+}
+
+.social-icons .social-btn {
+    transition: background-color 160ms cubic-bezier(.2,.9,.2,1), box-shadow 160ms cubic-bezier(.2,.9,.2,1), transform 160ms cubic-bezier(.2,.9,.2,1);
+}
+
 .social-icons .social-btn:hover {
     color: var(--bg);
-    transform: translateY(-6px) scale(1.05);
     background-color: var(--primary);
-    box-shadow: 0 8px 30px rgba(31,52,188,0.18);
+    box-shadow: 0 16px 28px rgba(31,52,188,0.16);
+    transform: translateY(-3px);
+}
+
+.social-icons .social-btn:hover .social-inner {
+    transform: translateY(-1px);
+}
+
+/* make the svg icon switch to white during hover for better contrast */
+.social-icons .social-btn:hover svg {
+    color: #ffffff;
+    transform: scale(1.28);
+}
+
+/* disable hover animation on touch-only devices for stability */
+@media (hover: none) and (pointer: coarse) {
+    .social-icons .social-btn .social-inner {
+        transition: none;
+        transform: none !important;
+    }
+
+    .social-icons .social-btn:hover {
+        transform: none;
+    }
+
+    .social-icons .social-btn:hover svg {
+        transform: none;
+    }
+}
+
+/* keyboard focus style */
+.social-icons .social-btn:focus-visible {
+    outline: 3px solid color-mix(in srgb, var(--primary) 30%, transparent 70%);
+    outline-offset: 3px;
 }
 
 .home {
@@ -181,9 +238,7 @@ body.light {
 }
 
 /* Stabilize hero layout when content length changes (e.g., language switch) */
-.home {
-    /* fallback: no global min-height to avoid interfering with fixed header on small screens */
-}
+/* (No-op block removed to avoid empty ruleset) */
 
 /* Apply stabilization only on medium+ screens so mobile header layout is unaffected */
 @media (min-width: 700px) {
@@ -290,7 +345,13 @@ body.light {
     }
 
     .home-img {
-        /* slightly larger visual nudge to the right per user request */
-        transform: translateX(clamp(1.6rem, 3.5vw, 5rem));
+        /* nudge image slightly to the left to avoid overlapping translated text */
+            transform: translateX(calc(-1 * clamp(0.8rem, 2.5vw, 4rem)));
+    }
+
+    /* nudge the content left slightly so image and text keep balanced spacing */
+    .home .home-content {
+        transform: translateX(calc(-1 * clamp(0.4rem, 1.2vw, 2rem)));
+        transition: transform 260ms ease;
     }
 }
