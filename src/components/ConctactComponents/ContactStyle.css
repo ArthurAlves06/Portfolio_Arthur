@@ -56,9 +56,9 @@
 .contact .btn {
   display: inline-block;
   padding: .9rem 2.2rem;
-  background: var(--primary);
-  color: var(--bg);
-  border: none;
+  background: linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 72%, black 28%));
+  color: #ffffff;
+  border: 1px solid color-mix(in srgb, var(--primary) 88%, black 12%);
   border-radius: 10px;
   cursor: pointer;
 }
@@ -71,8 +71,8 @@
   gap: 0.9rem;
   padding: 1.15rem 1.5rem;
   border-radius: 14px;
-  box-shadow: 0 12px 24px rgba(31, 52, 188, 0.14);
-  transition: transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease;
+  box-shadow: 0 12px 24px rgba(31, 52, 188, 0.18);
+  transition: transform 180ms ease, box-shadow 180ms ease, opacity 180ms ease, filter 180ms ease;
 }
 
 .contact-submit .submit-label {
@@ -81,7 +81,8 @@
 
 .contact-submit:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 16px 30px rgba(31, 52, 188, 0.2);
+  box-shadow: 0 16px 30px rgba(31, 52, 188, 0.24);
+  filter: brightness(1.05);
 }
 
 .contact-submit:disabled {
@@ -107,6 +108,7 @@
 .contact-status {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 1rem;
   padding: 1.2rem 1.3rem;
   border-radius: 16px;
@@ -135,16 +137,23 @@
   flex-direction: column;
   gap: 0.35rem;
   flex: 1;
+  min-width: 0;
 }
 
 .contact-status strong {
   font-size: 1.45rem;
   color: var(--text);
+  word-break: normal;
+  overflow-wrap: normal;
+  hyphens: none;
 }
 
 .contact-status span {
   color: var(--muted);
   font-size: 1.2rem;
+  word-break: normal;
+  overflow-wrap: normal;
+  hyphens: none;
 }
 
 .contact-status-success {
@@ -173,11 +182,11 @@
 
 /* --- Aba de contatos escura (rodapé da página) --- */
 .contact-footer-dark {
-  background: var(--bg); /* usando var(--bg) para comportamento do tema */
+  background: transparent;
   color: var(--text);
   padding: 3.2rem 9% 4rem;
   margin-top: 2.4rem;
-  border-top: 1px solid var(--border-weak);
+  border-top: 1px solid color-mix(in srgb, var(--primary) 12%, transparent);
 }
 /* No corpo do CSS (fora das media queries) */
 .contact-footer-inner {
@@ -370,6 +379,14 @@
   .contact .btn {
     width: 100%;
     padding: 1.2rem;
+  }
+
+  .contact-status {
+    align-items: flex-start;
+  }
+
+  .contact-status-action {
+    width: 100%;
   }
 }
 

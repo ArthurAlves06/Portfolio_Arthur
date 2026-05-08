@@ -477,7 +477,7 @@ function ptWeekday(enShort) {
   return map[enShort] || enShort;
 }
 
-const AdminDashboard = () => {
+const AdminDashboard = ({ onLogout }) => {
   const [events, setEvents] = useState([]);
   const [range, setRange] = useState('week'); // 'week' or 'month'
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -504,6 +504,11 @@ const AdminDashboard = () => {
   const projectCounts = useMemo(() => sumBy(events.filter((event) => event.type === 'project_click'), 'projectTitle'), [events]);
   const certificateCounts = useMemo(() => sumBy(events.filter((event) => event.type === 'certificate_click'), 'certificateTitle'), [events]);
   const latestEvents = useMemo(() => events.slice(0, 8), [events]);
+            {onLogout ? (
+              <button type="button" className="admin-action-btn ghost" onClick={onLogout}>
+                Sair
+              </button>
+            ) : null}
   const hasData = events.length > 0;
 
   const filteredEvents = useMemo(() => {
@@ -672,9 +677,13 @@ const AdminDashboard = () => {
                 <span />
                 <span />
               </button>
-              <h1>Visão Geral</h1>
+              <h1>{categoryTitle}</h1>
             </div>
-            <p>Bem-vindo ao painel administrativo do Portfolio Arthur.</p>
+            <p>
+              {activeCategory === 'manage'
+                ? 'Adicione, edite ou remova conteúdos do portfólio.'
+                : 'Bem-vindo ao painel administrativo do Portfolio Arthur.'}
+            </p>
           </div>
 
           <div className="admin-actions">

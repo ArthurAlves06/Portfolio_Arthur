@@ -1,18 +1,22 @@
 /* --- Novo CSS para o Footer --- */
 
 .footer {
+    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    padding: 2rem 9%;
-    background-color: var(--surface);
-    border-top: 2px solid var(--primary);
+    gap: 1rem;
+    padding: 2.4rem 9%;
+    background: transparent;
+    border-top: 1px solid color-mix(in srgb, var(--primary) 16%, transparent);
 }
 
 .footer-text p {
-    font-size: 1.6rem;
+    font-size: 1.45rem;
+    font-weight: 500;
     color: var(--text);
+    opacity: 0.92;
 }
 
 .footer-iconTop a {
@@ -22,7 +26,7 @@
     padding: 0.8rem;
     background-color: var(--primary);
     border-radius: var(--radius);
-    transition: 0.3s ease;
+    transition: 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .footer-iconTop a:hover {

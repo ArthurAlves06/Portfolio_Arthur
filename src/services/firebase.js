@@ -1,5 +1,6 @@
 import { getApp, getApps, initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 
 // Firebase config read from Vite env (VITE_FIREBASE_*)
 const firebaseConfig = {
@@ -25,6 +26,7 @@ export const hasFirebaseConfig = hasRequiredConfig;
 
 let _firebaseApp = null;
 let _db = null;
+let _auth = null;
 
 /**
  * Initialize Firebase app (idempotent).
@@ -35,6 +37,7 @@ export function initFirebase() {
   if (_firebaseApp) return _firebaseApp;
   _firebaseApp = getApps().length ? getApp() : initializeApp(firebaseConfig);
   _db = getFirestore(_firebaseApp);
+  _auth = getAuth(_firebaseApp);
   return _firebaseApp;
 }
 
@@ -50,5 +53,13 @@ export function getDb() {
   return _db;
 }
 
+/**
+ * Returns Firebase Auth instance or null if Firebase is not configured.
+ */
+export function getAuthClient() {
+  return _auth;
+}
+
 // Backwards-compatible export name used elsewhere in the codebase
 export const db = getDb();
+export const auth = getAuthClient();

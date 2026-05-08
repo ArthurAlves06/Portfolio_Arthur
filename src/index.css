@@ -20,9 +20,62 @@ body {
     min-height: 100vh;
     /* trocar height por min-height */
     /* overflow: hidden; */
-    background-color: var(--bg);
+  background-color: var(--bg);
+  background-image: var(--bg-image);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
     color: var(--text);
+  position: relative;
 }
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.075;
+  background-image:
+    radial-gradient(rgba(255, 255, 255, 0.3) 0.45px, transparent 0.6px),
+    radial-gradient(rgba(255, 255, 255, 0.16) 0.45px, transparent 0.6px),
+    radial-gradient(rgba(255, 255, 255, 0.09) 0.4px, transparent 0.55px);
+  background-size: 2.5px 2.5px, 5px 5px, 9px 9px;
+  background-position: 0 0, 1px 2px, 2px 1px;
+  mix-blend-mode: soft-light;
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+}
+
+  .scroll-reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    filter: blur(8px);
+    transition:
+      opacity 700ms ease,
+      transform 700ms cubic-bezier(.2,.8,.2,1),
+      filter 700ms ease;
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, transform, filter;
+  }
+
+  .scroll-reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .scroll-reveal {
+      opacity: 1;
+      transform: none;
+      filter: none;
+      transition: none;
+    }
+  }
 
 /* Header styles moved to component-specific CSS (HeaderStyle.css)
    to avoid conflicts with the header layout and positioning. */
@@ -87,22 +140,23 @@ span {
 .btn {
   display: inline-block;
   padding: 1rem 2.8rem;
-  background-color: var(--btn-bg);
+  background: linear-gradient(135deg, var(--primary), color-mix(in srgb, var(--primary) 72%, black 28%));
   border-radius: 4rem;
   font-size: 1.6rem;
-  color: var(--btn-text);
+  color: #ffffff;
   letter-spacing: 0.3rem;
   font-weight: 600;
-  border: 2px solid var(--btn-border);
-  transition: 0.3s ease;
+  border: 2px solid color-mix(in srgb, var(--primary) 88%, black 12%);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
   cursor: pointer;
+  box-shadow: 0 12px 24px rgba(31, 52, 188, 0.16);
 }
 
 .btn:hover {
-    background-color: rgb(31, 52, 188);
-  color: var(--bg);
-  box-shadow: var(--card-shadow-hover);
-    transform: scale(1.03);
+  filter: brightness(1.05);
+  color: #ffffff;
+  box-shadow: 0 16px 30px rgba(31, 52, 188, 0.22);
+  transform: translateY(-2px) scale(1.02);
 }
 
 .typing-text {

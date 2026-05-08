@@ -1,5 +1,5 @@
 .certificate-wrapper {
-  perspective: 1000px;
+  perspective: 1200px;
   width: 100%;
   max-width: 300px;
   /* use a taller ratio so the certificate has more vertical breathing room */
@@ -20,10 +20,18 @@
   height: 100%;
   cursor: pointer;
   border-radius: 14px;
-  border: 1px solid rgba(31, 52, 188, 0.06);
+  border: 1px solid rgba(31, 52, 188, 0.1);
   transition: transform 0.5s ease, box-shadow 0.18s ease, border-color 0.18s ease;
   transform-style: preserve-3d;
   will-change: transform;
+}
+
+body.dark-soft .certificate-card {
+  border-color: rgba(31, 52, 188, 0.18);
+}
+
+body.dark-soft .certificate-card:hover {
+  border-color: rgba(31, 52, 188, 0.28);
 }
 
 .certificate-card.no-flip {
@@ -40,7 +48,7 @@
 
 /* flip the whole card (outer element) so it behaves like before */
 .certificate-card.flipped {
-  transform: rotateY(180deg) translateY(-8px);
+  transform: rotateY(180deg);
   z-index: 12;
 }
 
@@ -58,6 +66,7 @@
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -66,13 +75,14 @@
   background: var(--card-bg, var(--surface));
   border: none;
   /* subtle resting shadow to avoid heavy gray backdrop between cards */
-  box-shadow: var(--card-shadow-soft);
+  box-shadow: 0 4px 12px rgba(2,6,23,0.04);
+  transform: translateZ(0);
 }
 
 .certificate-front {
   align-items: center;
   text-align: center;
-  background: transparent; /* remove boxed bg so certificate images feel edge-to-edge */
+  background: linear-gradient(180deg, color-mix(in srgb, var(--card-bg) 94%, var(--primary) 6%), var(--card-bg));
 }
 
 /* Header shown at top of certificate: icon left, date badge right */
@@ -375,19 +385,19 @@
 @media (max-width: 768px) {
   .certificate-wrapper {
     max-width: 100%;
-    aspect-ratio: 3 / 4;
-    min-height: 360px;
+    aspect-ratio: 3 / 4.15;
+    min-height: 400px;
   }
 
   .certificate-front,
   .certificate-back {
-    padding: 1.1rem;
+    padding: 1.45rem;
   }
 
   .certificate-image {
     width: 100%;
-    height: 42%;
-    margin-bottom: 0.6rem;
+    height: 40%;
+    margin-bottom: 0.9rem;
   }
 
   .issuer-logo {

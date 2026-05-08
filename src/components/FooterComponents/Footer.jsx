@@ -4,13 +4,17 @@ import { useTranslation } from 'react-i18next';
 
 const Footer = () => {
   const { t } = useTranslation();
+  const copyright = t('footer.copyright', {
+    defaultValue: 'Copyright © 2026 por Arthur | Todos os direitos reservados.',
+  });
+
   return (
     <footer className="footer">
       <div className="footer-text">
-        <p>{t('footer.copyright')}</p>
+        <p>{copyright}</p>
       </div>
       <div className="footer-iconTop">
-        <a href="#home">
+        <a href="#home" aria-label="Voltar ao topo">
           <i className="fa-solid fa-arrow-up"></i>
         </a>
       </div>

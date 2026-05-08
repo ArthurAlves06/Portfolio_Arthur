@@ -1,6 +1,9 @@
 :root {
   /* ... cores mantidas ... */
 
+  /* Background global em camadas */
+  --bg-image: none;
+
   /* Scrollbar defaults (can be themed per body class below) */
   --scroll-track: rgba(255,255,255,0.04);
   --scroll-thumb: rgba(255,255,255,0.12);
@@ -42,6 +45,9 @@ body.dark-soft {
   --surface: #15161a; /* lightened surface for softer contrast */
   --text: #e9eef0; /* softer white for reduced contrast */
   --muted: #bfc6c9;
+  --bg-image:
+    radial-gradient(circle at top center, rgba(31, 52, 188, 0.10), transparent 34%),
+    linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0));
 
   /* cartões escuros no tema dark-soft */
   --card-bg: #0e0f12;
@@ -63,10 +69,13 @@ body.dark-soft {
 
 /* Tema claro */
 body.light {
-  --bg: #ffffff;
+  --bg: #f7f9fc;
   --surface: #f5f6f8;
   --text: #0b0b0b;
   --muted: #616161;
+  --bg-image:
+    radial-gradient(circle at top center, rgba(31, 52, 188, 0.045), transparent 34%),
+    linear-gradient(180deg, rgba(255,255,255,0.98), rgba(255,255,255,1));
 
   /* header claro para evitar caixa preta */
   --header-bg: rgba(255,255,255,0.92);
