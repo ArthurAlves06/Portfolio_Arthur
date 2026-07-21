@@ -1,8 +1,11 @@
 import XadrezImage from '../assets/Xadrez.jpeg';
 import JogoDaVelhaImage from '../assets/jogo da velha.png';
 import cheilaAdm from '../assets/cheilaAdm.png';
-import { FaReact, FaTools } from 'react-icons/fa';
-import { SiFirebase, SiHtml5 } from 'react-icons/si';
+import imobiliariaValdinei from '../assets/imobiliariaValdinei.png';
+import dashBoardN8n from '../assets/DashBoard_n8n.png';
+import N8nIcon from '../components/SkillsComponents/icons/N8nIcon';
+import { FaDocker, FaCloud, FaReact, FaTools } from 'react-icons/fa';
+import { SiDocker, SiGooglecolab, SiFirebase, SiHtml5 } from 'react-icons/si';
 import { BiCode } from 'react-icons/bi';
 
 export const defaultProjects = [
@@ -12,7 +15,7 @@ export const defaultProjects = [
     category: { pt: 'Site', en: 'Website' },
     image: cheilaAdm,
     description: { pt: 'Site com blog e sistema de mentoria, painel administrativo e integração com Firebase.', en: 'Website with blog and mentoring system, admin panel and Firebase integration.' },
-    liveUrl: 'https://cheila-lamour.web.app',
+    liveUrl: 'https://cheilalamour.web.app',
     repoUrl: 'https://github.com/The-Wavem/cheila_lamaour',
     imageAlt: { pt: 'Tela do projeto Newsletter e Mentoria', en: 'Screenshot of Newsletter & Mentoring project' },
     tools: [
@@ -24,6 +27,39 @@ export const defaultProjects = [
   },
   {
     id: 2,
+    title: { pt: 'Imobiliária Valdinei Souza', en: 'Valdinei Souza Real Estate' },
+    category: { pt: 'Site', en: 'Website' },
+    image: imobiliariaValdinei,
+    description: { pt: 'Plataforma web imobiliária para apresentação e busca de imóveis, com integração com Firebase e layout responsivo.', en: 'Real estate web platform for property listing and search, featuring Firebase integration and a responsive layout.' },
+    liveUrl: 'https://valdineisouzaimoveis.com.br',
+    repoUrl: 'https://github.com/The-Wavem/imobiliaria_valdinei',
+    imageAlt: { pt: 'Tela do projeto Imobiliária Valdinei Souza', en: 'Screenshot of Valdinei Souza Real Estate project' },
+    tools: [
+      { name: 'React', Icon: FaReact },
+      { name: 'Firebase', Icon: SiFirebase },
+      { name: 'Material UI', Icon: FaTools },
+      { name: 'HTML', Icon: SiHtml5 },
+    ],
+  },
+  {
+    id: 3,
+    title: { pt: 'Dashboard & Automação n8n', en: 'n8n Dashboard & Automation' },
+    category: { pt: 'Automação & Dashboard', en: 'Automation & Dashboard' },
+    image: dashBoardN8n,
+    description: { pt: 'Painel interativo conectado a fluxos de automação no n8n, hospedado via Docker e com processamento de dados via Google Colab.', en: 'Interactive dashboard connected to n8n automation workflows, containerized with Docker and featuring data processing via Google Colab.' },
+    liveUrl: 'https://dashboard-n8n-32f5f.web.app',
+    repoUrl: 'https://github.com/ArthurAlves06/dashboard-n8n',
+    imageAlt: { pt: 'Tela do projeto Dashboard n8n', en: 'Screenshot of n8n Dashboard project' },
+    tools: [
+      { name: 'n8n', Icon: N8nIcon },
+      { name: 'Docker', Icon: SiDocker },
+      { name: 'Google Colab', Icon: SiGooglecolab },
+      { name: 'React', Icon: FaReact },
+      { name: 'Firebase', Icon: SiFirebase },
+    ],
+  },
+  {
+    id: 4,
     title: { pt: 'Xadrez em C', en: 'Chess in C' },
     category: { pt: 'Jogo', en: 'Game' },
     image: XadrezImage,
@@ -34,7 +70,7 @@ export const defaultProjects = [
     tools: [{ name: 'C', Icon: BiCode }],
   },
   {
-    id: 3,
+    id: 5,
     title: { pt: 'Jogo da Velha em C', en: 'Tic-Tac-Toe in C' },
     category: { pt: 'Jogo', en: 'Game' },
     image: JogoDaVelhaImage,
