@@ -7,6 +7,12 @@ import { clonePortfolioProjects, clonePortfolioCertificates, normalizeProjectRec
 const emptyProject = { id: null, title: '', category: '', image: '', description: '', liveUrl: '', repoUrl: '', tools: '' };
 const emptyCert = { id: null, title: '', issuer: '', date: '', link: '', certificateImage: '', skills: '' };
 
+const getText = (val, lang = 'pt') => {
+  if (!val) return '';
+  if (typeof val === 'object') return val[lang] || val.pt || val.en || '';
+  return String(val);
+};
+
 export default function AdminContent() {
   const [projects, setProjects] = useState(() => {
     const stored = adminData.getStoredProjects();
@@ -101,9 +107,13 @@ export default function AdminContent() {
     setEditingProjectId(normalized.id);
     setProjForm({
       ...normalized,
-      liveUrl: normalized.liveUrl,
-      repoUrl: normalized.repoUrl,
-      imageAlt: normalized.imageAlt || normalized.title,
+      title: getText(normalized.title),
+      category: getText(normalized.category),
+      description: getText(normalized.description),
+      liveUrl: normalized.liveUrl || '',
+      repoUrl: normalized.repoUrl || '',
+      image: normalized.image || '',
+      imageAlt: getText(normalized.imageAlt || normalized.title),
       tools: Array.isArray(normalized.tools)
         ? normalized.tools.map((tool) => (typeof tool === 'string' ? tool : tool.name)).join(', ')
         : '',
@@ -187,14 +197,14 @@ export default function AdminContent() {
         {projects.map((project) => (
           <article className="project-admin-card" key={project.id}>
             <div className="project-admin-media">
-              {project.image ? <img src={project.image} alt={project.imageAlt || project.title} /> : <div className="image-placeholder"><FiImage /> Sem imagem</div>}
-              <span className="project-admin-badge">{project.category || 'Projeto'}</span>
+              {project.image ? <img src={project.image} alt={getText(project.imageAlt || project.title)} /> : <div className="image-placeholder"><FiImage /> Sem imagem</div>}
+              <span className="project-admin-badge">{getText(project.category) || 'Projeto'}</span>
             </div>
             <div className="project-admin-body">
               <div className="project-admin-topline">
                 <div>
-                  <h4>{project.title}</h4>
-                  <p>{project.description}</p>
+                  <h4>{getText(project.title)}</h4>
+                  <p>{getText(project.description)}</p>
                 </div>
               </div>
 
@@ -244,11 +254,11 @@ export default function AdminContent() {
           <article className="certificate-admin-card" key={certificate.id}>
             <div className="certificate-admin-top">
               <div className="certificate-admin-icon">
-                {certificate.certificateImage ? <img src={certificate.certificateImage} alt={certificate.title} /> : <FiImage />}
+                {certificate.certificateImage ? <img src={certificate.certificateImage} alt={getText(certificate.title)} /> : <FiImage />}
               </div>
               <div className="certificate-admin-meta">
-                <h4>{certificate.title}</h4>
-                <p>{certificate.issuer}</p>
+                <h4>{getText(certificate.title)}</h4>
+                <p>{getText(certificate.issuer)}</p>
               </div>
               <span className="summary-pill compact">{certificate.date}</span>
             </div>

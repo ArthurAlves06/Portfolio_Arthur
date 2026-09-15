@@ -7,7 +7,11 @@ import ScrollReveal from '../ScrollReveal';
 
 const Contact = () => {
   const { t } = useTranslation();
+  const NAME_MAX = 60;
+  const EMAIL_MAX = 80;
+  const SUBJECT_MAX = 100;
   const MESSAGE_MAX = 800;
+
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
   const [sending, setSending] = useState(false);
   const [submitted, setSubmitted] = useState(false);
@@ -15,8 +19,11 @@ const Contact = () => {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name === 'message' && value.length > MESSAGE_MAX) return; // safeguard
-    setForm({ ...form, [name]: value });
+    if (name === 'name' && value.length > NAME_MAX) return;
+    if (name === 'email' && value.length > EMAIL_MAX) return;
+    if (name === 'subject' && value.length > SUBJECT_MAX) return;
+    if (name === 'message' && value.length > MESSAGE_MAX) return;
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleResetMessage = () => {
@@ -31,14 +38,25 @@ const Contact = () => {
     setSubmitted(false);
     setErrorMessage('');
 
+    const cleanName = form.name.trim().slice(0, NAME_MAX);
+    const cleanEmail = form.email.trim().slice(0, EMAIL_MAX);
+    const cleanSubject = form.subject.trim().slice(0, SUBJECT_MAX);
+    const cleanMessage = form.message.trim().slice(0, MESSAGE_MAX);
+
     try {
       const endpoint = 'https://formspree.io/f/mkopgzbn';
+      const formData = new FormData();
+      formData.append('name', cleanName);
+      formData.append('email', cleanEmail);
+      formData.append('subject', cleanSubject);
+      formData.append('message', cleanMessage);
+
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           Accept: 'application/json',
         },
-        body: new FormData(e.currentTarget),
+        body: formData,
       });
 
       if (!response.ok) {
@@ -46,15 +64,15 @@ const Contact = () => {
       }
 
       trackEvent('lead_captured', {
-        name: form.name,
-        email: form.email,
-        subject: form.subject,
+        name: cleanName,
+        email: cleanEmail,
+        subject: cleanSubject,
       });
       trackEvent('message_sent', {
-        name: form.name,
-        email: form.email,
-        subject: form.subject,
-        messageLength: form.message.length,
+        name: cleanName,
+        email: cleanEmail,
+        subject: cleanSubject,
+        messageLength: cleanMessage.length,
       });
 
       setSubmitted(true);
@@ -154,18 +172,42 @@ const Contact = () => {
               <div className="input-row">
                 <div className="input-group">
                   <label>{t('contact.form.labelName')}</label>
-                  <input name="name" type="text" placeholder={t('contact.form.placeholderName')} required value={form.name} onChange={handleChange} />
+                  <input
+                    name="name"
+                    type="text"
+                    placeholder={t('contact.form.placeholderName')}
+                    required
+                    value={form.name}
+                    onChange={handleChange}
+                    maxLength={NAME_MAX}
+                  />
                 </div>
                 <div className="input-group">
                   <label>{t('contact.form.labelEmail')}</label>
-                  <input name="email" type="email" placeholder={t('contact.form.placeholderEmail')} required value={form.email} onChange={handleChange} />
+                  <input
+                    name="email"
+                    type="email"
+                    placeholder={t('contact.form.placeholderEmail')}
+                    required
+                    value={form.email}
+                    onChange={handleChange}
+                    maxLength={EMAIL_MAX}
+                  />
                 </div>
               </div>
 
               <div className="input-row">
                 <div className="input-group full">
                   <label>{t('contact.form.labelSubject')}</label>
-                  <input name="subject" type="text" placeholder={t('contact.form.placeholderSubject')} required value={form.subject} onChange={handleChange} />
+                  <input
+                    name="subject"
+                    type="text"
+                    placeholder={t('contact.form.placeholderSubject')}
+                    required
+                    value={form.subject}
+                    onChange={handleChange}
+                    maxLength={SUBJECT_MAX}
+                  />
                 </div>
               </div>
 

@@ -133,6 +133,12 @@ section {
     scroll-margin-top: 8rem; /* ADICIONADO: compensa o header fixo ao rolar para âncoras */
 }
 
+.admin-shell section {
+    min-height: auto;
+    padding: 0;
+    scroll-margin-top: 0;
+}
+
 span {
     color: var(--primary);
 }

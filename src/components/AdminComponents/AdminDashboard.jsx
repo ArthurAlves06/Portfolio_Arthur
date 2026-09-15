@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import './AdminDashboardStyle.css';
-import { FiBarChart2, FiHome, FiUsers, FiMousePointer, FiMessageCircle, FiAward, FiSettings, FiLogOut, FiDownload, FiRefreshCw, FiPlay } from 'react-icons/fi';
+import { FiBarChart2, FiHome, FiUsers, FiMousePointer, FiMessageCircle, FiAward, FiSettings, FiLogOut, FiDownload, FiRefreshCw, FiPlay, FiEdit3, FiSearch, FiCopy, FiCheck, FiLayers, FiExternalLink } from 'react-icons/fi';
 import { refreshAnalyticsEvents, seedAnalyticsDemo, subscribeAnalyticsEvents } from '../../utils/analytics';
 import AdminContent from './AdminContent';
 
@@ -35,8 +35,18 @@ const lastNDays = (days) => Array.from({ length: days }, (_, index) => {
   return date.toISOString().slice(0, 10);
 });
 
+const extractName = (value, maxLen = 80) => {
+  if (!value) return 'Sem nome';
+  const str = typeof value === 'object' ? (value.pt || value.en || 'Sem nome') : String(value);
+  if (str.length > maxLen) {
+    return `${str.slice(0, maxLen).trim()}...`;
+  }
+  return str;
+};
+
 const sumBy = (events, key) => events.reduce((acc, event) => {
-  const nextKey = event[key] || 'Sem nome';
+  const raw = event[key];
+  const nextKey = extractName(raw);
   acc[nextKey] = (acc[nextKey] || 0) + 1;
   return acc;
 }, {});
@@ -58,7 +68,7 @@ const makeExportFile = (events) => {
   URL.revokeObjectURL(url);
 };
 
-const StatCard = ({ label, value, helper, icon, tone }) => (
+const StatCard = ({ label, value, helper, icon, tone, trend }) => (
   <article className="admin-stat-card">
     <span className={`stat-icon ${tone}`}>{icon}</span>
     <div className="stat-copy">
@@ -66,7 +76,7 @@ const StatCard = ({ label, value, helper, icon, tone }) => (
       <strong>{value}</strong>
       <span>{helper}</span>
     </div>
-    <span className="stat-trend">+4.5%</span>
+    {trend && <span className="stat-trend">{trend}</span>}
   </article>
 );
 
@@ -256,7 +266,7 @@ const RankedBarCard = ({ title, subtitle, items, accent }) => {
         ) : ordered.map(([name, value]) => (
           <div className="rank-row" key={name}>
             <div className="rank-row-meta">
-              <strong>{name}</strong>
+              <strong>{extractName(name)}</strong>
               <span>{value}</span>
             </div>
             <div className="rank-track">
@@ -269,105 +279,241 @@ const RankedBarCard = ({ title, subtitle, items, accent }) => {
   );
 };
 
-const LineCard = ({ events, range = 'week', onRangeChange = () => {} }) => {
-  const daysCount = range === 'week' ? 7 : 30;
-  const days = useMemo(() => lastNDays(daysCount), [daysCount]);
-  const grouped = days.map((day) => ({
-    day,
-    page_view: events.filter((event) => event.dateKey === day && event.type === 'page_view').length,
-  }));
+const LineCard = ({ events }) => {
+  const [metric, setMetric] = useState('page_view');
+  const [viewMode, setViewMode] = useState('30d'); // '7d', '30d', 'month', 'year'
 
-  const maxValue = Math.max(1, ...grouped.map((item) => item.page_view));
+  const currentDate = new Date();
+  const [selectedYear, setSelectedYear] = useState(currentDate.getFullYear());
+  const [selectedMonth, setSelectedMonth] = useState(currentDate.getMonth() + 1); // 1-12
 
-  // build points for svg
-  const points = grouped.map((item, idx) => {
-    const raw = new Intl.DateTimeFormat('pt-BR', { weekday: 'short' }).format(new Date(item.day));
-    const cleaned = raw.replace('.', '').replace('\u00A0', '');
-    const label = cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
-    return ({ xIndex: idx, label, value: item.page_view });
-  });
+  // Available years from events
+  const availableYears = useMemo(() => {
+    const yearsSet = new Set([currentDate.getFullYear()]);
+    events.forEach((e) => {
+      if (e.createdAt) {
+        const y = new Date(e.createdAt).getFullYear();
+        if (!isNaN(y)) yearsSet.add(y);
+      }
+    });
+    return Array.from(yearsSet).sort((a, b) => b - a);
+  }, [events, currentDate]);
 
-  const showMonthLabel = range === 'month';
-  const monthLabel = (() => {
-    if (!showMonthLabel) return null;
-    const dt = new Date();
-    const month = new Intl.DateTimeFormat('pt-BR', { month: 'long' }).format(dt);
-    const year = dt.getFullYear();
-    return `${month.charAt(0).toUpperCase() + month.slice(1)} ${year}`;
-  })();
+  const monthNames = [
+    'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+    'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
+  ];
+
+  // Compute grouped data points according to viewMode
+  const { points, periodTitle } = useMemo(() => {
+    let result = [];
+    let title = '';
+
+    if (viewMode === '7d' || viewMode === '30d') {
+      const daysCount = viewMode === '7d' ? 7 : 30;
+      title = viewMode === '7d' ? 'Últimos 7 dias' : 'Últimos 30 dias';
+      const days = lastNDays(daysCount);
+
+      result = days.map((day, idx) => {
+        const d = new Date(day + 'T12:00:00');
+        const dayNum = String(d.getDate()).padStart(2, '0');
+        const monthShort = new Intl.DateTimeFormat('pt-BR', { month: 'short' }).format(d).replace('.', '');
+        const weekday = new Intl.DateTimeFormat('pt-BR', { weekday: 'short' }).format(d).replace('.', '');
+        const val = events.filter((e) => e.dateKey === day && e.type === metric).length;
+
+        return {
+          xIndex: idx,
+          shortLabel: viewMode === '7d' ? (weekday.charAt(0).toUpperCase() + weekday.slice(1)) : `${dayNum}/${monthShort}`,
+          fullDateLabel: `${dayNum} de ${monthShort}`,
+          value: val,
+        };
+      });
+    } else if (viewMode === 'month') {
+      // Days of the selected month
+      const daysInMonth = new Date(selectedYear, selectedMonth, 0).getDate();
+      title = `${monthNames[selectedMonth - 1]} de ${selectedYear}`;
+
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dayStr = String(day).padStart(2, '0');
+        const mStr = String(selectedMonth).padStart(2, '0');
+        const dateKey = `${selectedYear}-${mStr}-${dayStr}`;
+        const val = events.filter((e) => e.dateKey === dateKey && e.type === metric).length;
+
+        result.push({
+          xIndex: day - 1,
+          shortLabel: `Dia ${dayStr}`,
+          fullDateLabel: `${dayStr} de ${monthNames[selectedMonth - 1]} de ${selectedYear}`,
+          value: val,
+        });
+      }
+    } else if (viewMode === 'year') {
+      // 12 months of the selected year
+      title = `Ano de ${selectedYear}`;
+      for (let m = 1; m <= 12; m++) {
+        const mStr = String(m).padStart(2, '0');
+        const yearPrefix = `${selectedYear}-${mStr}`;
+        const val = events.filter((e) => (e.dateKey || '').startsWith(yearPrefix) && e.type === metric).length;
+
+        result.push({
+          xIndex: m - 1,
+          shortLabel: monthNames[m - 1].slice(0, 3),
+          fullDateLabel: `${monthNames[m - 1]} de ${selectedYear}`,
+          value: val,
+        });
+      }
+    }
+
+    return { points: result, periodTitle: title };
+  }, [viewMode, selectedYear, selectedMonth, events, metric]);
+
+  const totalPeriod = points.reduce((sum, item) => sum + item.value, 0);
+  const maxValue = Math.max(1, ...points.map((item) => item.value));
+  const avgValue = points.length ? (totalPeriod / points.length).toFixed(1) : 0;
+
+  const metricLabel = {
+    page_view: 'Visitas',
+    project_click: 'Cliques em Projetos',
+    lead_captured: 'Leads Capturados',
+  }[metric] || 'Visitas';
 
   return (
     <article className="panel-card panel-card-line">
       <div className="panel-card-header">
         <div>
-          <h3>Tráfego</h3>
-          <p className="panel-subtitle">visitas e geração de leads nos últimos {daysCount} dias</p>
+          <h3>Gráfico de Atividade ({metricLabel})</h3>
+          <p className="panel-subtitle">{periodTitle} • Métricas em tempo real</p>
         </div>
+
         <div className="chart-controls">
-          {showMonthLabel && <div className="month-label">{monthLabel}</div>}
-          <div className="range-buttons">
-            <button className={`range-btn ${range === 'week' ? 'active' : ''}`} onClick={() => onRangeChange('week')}>Semana</button>
-            <button className={`range-btn ${range === 'month' ? 'active' : ''}`} onClick={() => onRangeChange('month')}>Mês</button>
+          {/* Metric Selector */}
+          <div className="range-buttons metric-selector">
+            <button className={`range-btn ${metric === 'page_view' ? 'active' : ''}`} onClick={() => setMetric('page_view')}>Visitas</button>
+            <button className={`range-btn ${metric === 'project_click' ? 'active' : ''}`} onClick={() => setMetric('project_click')}>Cliques</button>
+            <button className={`range-btn ${metric === 'lead_captured' ? 'active' : ''}`} onClick={() => setMetric('lead_captured')}>Leads</button>
           </div>
+
+          {/* Time Scope Tabs */}
+          <div className="range-buttons">
+            <button className={`range-btn ${viewMode === '7d' ? 'active' : ''}`} onClick={() => setViewMode('7d')}>7D</button>
+            <button className={`range-btn ${viewMode === '30d' ? 'active' : ''}`} onClick={() => setViewMode('30d')}>30D</button>
+            <button className={`range-btn ${viewMode === 'month' ? 'active' : ''}`} onClick={() => setViewMode('month')}>Mês</button>
+            <button className={`range-btn ${viewMode === 'year' ? 'active' : ''}`} onClick={() => setViewMode('year')}>Ano</button>
+          </div>
+
+          {/* Dropdowns when Month or Year are selected */}
+          {viewMode === 'month' && (
+            <div className="chart-dropdowns">
+              <select
+                className="chart-select"
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(Number(e.target.value))}
+              >
+                {monthNames.map((mName, idx) => (
+                  <option key={idx + 1} value={idx + 1}>{mName}</option>
+                ))}
+              </select>
+              <select
+                className="chart-select"
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(Number(e.target.value))}
+              >
+                {availableYears.map((y) => (
+                  <option key={y} value={y}>{y}</option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {viewMode === 'year' && (
+            <div className="chart-dropdowns">
+              <select
+                className="chart-select"
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(Number(e.target.value))}
+              >
+                {availableYears.map((y) => (
+                  <option key={y} value={y}>{y}</option>
+                ))}
+              </select>
+            </div>
+          )}
         </div>
       </div>
+
+      <div className="chart-stat-bar">
+        <div className="chart-stat-item">
+          <span className="chart-stat-label">Total do Período</span>
+          <strong className="chart-stat-num">{totalPeriod}</strong>
+        </div>
+        <div className="chart-stat-item">
+          <span className="chart-stat-label">Média do Período</span>
+          <strong className="chart-stat-num">{avgValue}</strong>
+        </div>
+        <div className="chart-stat-item">
+          <span className="chart-stat-label">Pico Máximo</span>
+          <strong className="chart-stat-num">{maxValue}</strong>
+        </div>
+      </div>
+
       <div className="chart-wrap">
-        <LineChart points={points} maxValue={maxValue} color="var(--admin-accent-2)" fillColor="rgba(99,102,241,0.12)" strokeWidth={4} />
+        <LineChart
+          points={points}
+          maxValue={maxValue}
+          color="#38bdf8"
+          strokeWidth={3.5}
+          metricLabel={metricLabel}
+          viewMode={viewMode}
+        />
       </div>
     </article>
   );
 };
 
-const LineChart = ({ points, maxValue, color = 'var(--admin-accent-2)', fillColor = 'rgba(79,140,255,0.08)', strokeWidth = 3 }) => {
+const LineChart = ({ points, maxValue, color = '#38bdf8', strokeWidth = 3, metricLabel = 'Visitas', viewMode = '30d' }) => {
   const svgRef = React.useRef(null);
   const [hover, setHover] = useState(null);
-  const width = 820; // viewBox width
-  const height = 240;
-  const padding = 24;
+  const width = 960;
+  const height = 300;
+  const paddingLeft = 50;
+  const paddingRight = 30;
+  const paddingTop = 32;
+  const paddingBottom = 55;
+
+  const chartWidth = width - paddingLeft - paddingRight;
+  const chartHeight = height - paddingTop - paddingBottom;
 
   const coords = points.map((p, i) => {
-    const x = padding + (i * (width - padding * 2)) / Math.max(1, points.length - 1);
-    const y = padding + (1 - (p.value / Math.max(1, maxValue))) * (height - padding * 2);
+    const x = paddingLeft + (i * chartWidth) / Math.max(1, points.length - 1);
+    const y = paddingTop + (1 - (p.value / Math.max(1, maxValue))) * chartHeight;
     return { ...p, x, y };
   });
 
   const buildPath = (pts) => {
-    // cubic smoothing using simple midpoint control points for a smooth curve
     if (!pts.length) return '';
     if (pts.length === 1) return `M ${pts[0].x} ${pts[0].y}`;
+    const bottomLimit = paddingTop + chartHeight;
+    const topLimit = paddingTop;
+    const clampY = (y) => Math.min(bottomLimit, Math.max(topLimit, y));
+
     let d = `M ${pts[0].x} ${pts[0].y}`;
     for (let i = 0; i < pts.length - 1; i++) {
       const p = pts[i];
       const q = pts[i + 1];
-      const cx1 = p.x + (q.x - (pts[i - 1]?.x ?? p.x)) * 0.2;
-      const cy1 = p.y + (q.y - (pts[i - 1]?.y ?? p.y)) * 0.2;
-      const cx2 = q.x - ((pts[i + 2]?.x ?? q.x) - p.x) * 0.2;
-      const cy2 = q.y - ((pts[i + 2]?.y ?? q.y) - p.y) * 0.2;
+      const dx = (q.x - p.x) * 0.38;
+      const cx1 = p.x + dx;
+      const cy1 = clampY(p.y);
+      const cx2 = q.x - dx;
+      const cy2 = clampY(q.y);
       d += ` C ${cx1} ${cy1} ${cx2} ${cy2} ${q.x} ${q.y}`;
     }
     return d;
   };
 
   const lineD = buildPath(coords);
-  const areaD = lineD && coords.length ? `${lineD} L ${coords[coords.length - 1].x} ${height - padding} L ${coords[0].x} ${height - padding} Z` : '';
-
-  const pathRef = React.useRef(null);
-  React.useEffect(() => {
-    const pathEl = pathRef.current;
-    if (!pathEl) return;
-    try {
-      const len = pathEl.getTotalLength();
-      pathEl.style.strokeDasharray = String(len);
-      pathEl.style.strokeDashoffset = String(len);
-      // trigger layout
-      // eslint-disable-next-line no-unused-expressions
-      pathEl.getBoundingClientRect();
-      pathEl.style.transition = 'stroke-dashoffset 900ms cubic-bezier(.22,.9,.2,1)';
-      pathEl.style.strokeDashoffset = '0';
-    } catch (e) {
-      // ignore in case SVG not ready
-    }
-  }, [lineD]);
+  const baselineY = paddingTop + chartHeight;
+  const areaD = lineD && coords.length
+    ? `${lineD} L ${coords[coords.length - 1].x} ${baselineY} L ${coords[0].x} ${baselineY} Z`
+    : '';
 
   const findNearest = (svgX) => {
     let best = null;
@@ -379,103 +525,201 @@ const LineChart = ({ points, maxValue, color = 'var(--admin-accent-2)', fillColo
     return best;
   };
 
+  // Determine tick spacing based on viewMode
+  const tickStep = useMemo(() => {
+    if (viewMode === '7d') return 1;
+    if (viewMode === 'year') return 1; // 12 months fit comfortably
+    if (viewMode === '30d' || viewMode === 'month') return Math.ceil(points.length / 8);
+    return 1;
+  }, [viewMode, points.length]);
+
+  // Y-axis tick values
+  const yTicksCount = 4;
+  const yTicks = Array.from({ length: yTicksCount + 1 }, (_, i) => {
+    const ratio = i / yTicksCount;
+    const y = paddingTop + ratio * chartHeight;
+    const val = Math.round((1 - ratio) * Math.max(1, maxValue));
+    return { y, val };
+  });
+
   return (
-    <div className="svg-chart" style={{ position: 'relative' }}>
-      <svg viewBox={`0 0 ${width} ${height}`} ref={svgRef} preserveAspectRatio="none" width="100%" height="240"
+    <div className="svg-chart modern-chart" style={{ position: 'relative' }}>
+      <svg
+        viewBox={`0 0 ${width} ${height}`}
+        ref={svgRef}
+        preserveAspectRatio="none"
+        width="100%"
+        height="300"
         onMouseMove={(e) => {
           if (!svgRef.current) return;
-          const pt = svgRef.current.createSVGPoint();
-          pt.x = e.clientX;
-          pt.y = e.clientY;
-          const ctm = svgRef.current.getScreenCTM();
-          let svgP;
-          try {
-            svgP = pt.matrixTransform(ctm.inverse());
-          } catch (err) {
-            // fallback: use bounding rect mapping
-            const rect = svgRef.current.getBoundingClientRect();
-            const scaleX = rect.width / width;
-            svgP = { x: (e.clientX - rect.left) / scaleX, y: (e.clientY - rect.top) / (rect.height / height) };
-          }
-          const n = findNearest(svgP.x);
+          const rect = svgRef.current.getBoundingClientRect();
+          const scaleX = rect.width / width;
+          const scaleY = rect.height / height;
+          const svgX = (e.clientX - rect.left) / scaleX;
+          const n = findNearest(svgX);
           if (n) {
-            // compute pixel positions for tooltip
-            const rect = svgRef.current.getBoundingClientRect();
-            const scaleX = rect.width / width;
-            const scaleY = rect.height / height;
-            const leftPx = svgP.x * scaleX;
-            const topPx = svgP.y * scaleY;
-            setHover({ ...n, svgX: svgP.x, svgY: svgP.y, leftPx, topPx });
+            setHover({
+              ...n,
+              leftPx: n.x * scaleX,
+              topPx: n.y * scaleY,
+            });
           }
         }}
-        onMouseLeave={() => setHover(null)}>
+        onMouseLeave={() => setHover(null)}
+      >
         <defs>
-          <linearGradient id="colorVisitas" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="var(--admin-accent-2)" stopOpacity={0.15} />
-            <stop offset="95%" stopColor="var(--admin-accent-2)" stopOpacity={0} />
+          <linearGradient id="modernAreaGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#38bdf8" stopOpacity={0.28} />
+            <stop offset="65%" stopColor="#2563eb" stopOpacity={0.06} />
+            <stop offset="100%" stopColor="#0f172a" stopOpacity={0} />
           </linearGradient>
         </defs>
 
-        {areaD && <path d={areaD} fill="url(#colorVisitas)" className="chart-area" />}
-        {lineD && (
-          <path ref={pathRef} d={lineD} fill="none" stroke={color} strokeWidth={strokeWidth} className="chart-line" strokeLinecap="round" strokeLinejoin="round" />
-        )}
-
-        {coords.map((c, i) => (
-          <circle key={i} cx={c.x} cy={c.y} r={4} fill={color} style={{ opacity: hover && hover.idx === i ? 1 : 0.9 }} />
-        ))}
-
-        {hover && (
-          <g className="hover-group">
-            <line x1={hover.x} x2={hover.x} y1={padding} y2={height - padding} stroke="rgba(255,255,255,0.12)" strokeWidth={1} />
-            <circle cx={hover.x} cy={hover.y} r={6} fill="#fff" />
-          </g>
-        )}
-
-        {/* Y axis grid & labels (6 ticks) */}
-        {Array.from({ length: 6 }).map((_, i) => {
-          const t = i / 5; // 0..1
-          const y = padding + t * (height - padding * 2);
-          const value = Math.round((1 - t) * Math.max(0, maxValue));
-          const formatted = new Intl.NumberFormat('pt-BR').format(value);
+        {/* Y Axis Grid Lines */}
+        {yTicks.map((tick, i) => {
+          const isBottom = i === yTicks.length - 1;
           return (
-            <g key={`grid-${i}`} className="chart-grid">
-              <line x1={padding} x2={width - padding} y1={y} y2={y} stroke="rgba(255,255,255,0.03)" strokeWidth={1} />
-              <text x={padding - 8} y={y + 4} fontSize="11" textAnchor="end">{formatted}</text>
+            <g key={`y-grid-${i}`} className="chart-grid-line">
+              <line
+                x1={paddingLeft}
+                x2={width - paddingRight}
+                y1={tick.y}
+                y2={tick.y}
+                stroke={isBottom ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 0.05)'}
+                strokeDasharray={isBottom ? 'none' : '4 4'}
+                strokeWidth={1}
+              />
+              <text
+                x={paddingLeft - 14}
+                y={tick.y + 4}
+                fill="#64748b"
+                fontSize="12"
+                fontWeight="600"
+                textAnchor="end"
+              >
+                {tick.val}
+              </text>
             </g>
           );
         })}
-        {coords.map((c, i) => (
-          <text key={`x-${i}`} x={c.x} y={height - 6} fill="#64748B" fontSize="11" textAnchor="middle">{c.label}</text>
+
+        {/* Shaded area */}
+        {areaD && <path d={areaD} fill="url(#modernAreaGradient)" />}
+
+        {/* Main Line with crisp subtle stroke glow */}
+        {lineD && (
+          <path
+            d={lineD}
+            fill="none"
+            stroke={color}
+            strokeWidth={strokeWidth}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{ filter: 'drop-shadow(0 4px 10px rgba(56, 189, 248, 0.45))' }}
+          />
+        )}
+
+        {/* Active hover crosshair and point */}
+        {hover && (
+          <g className="hover-elements">
+            <line
+              x1={hover.x}
+              x2={hover.x}
+              y1={paddingTop}
+              y2={baselineY}
+              stroke="rgba(56, 189, 248, 0.45)"
+              strokeWidth={1.5}
+              strokeDasharray="3 3"
+            />
+            <circle
+              cx={hover.x}
+              cy={hover.y}
+              r={11}
+              fill="rgba(56, 189, 248, 0.28)"
+            />
+            <circle
+              cx={hover.x}
+              cy={hover.y}
+              r={5.5}
+              fill="#fff"
+              stroke="#0284c7"
+              strokeWidth={2.5}
+            />
+          </g>
+        )}
+
+        {/* Data points (when viewMode is 7d or year) */}
+        {(viewMode === '7d' || viewMode === 'year') && coords.map((c, i) => (
+          <circle
+            key={`pt-${i}`}
+            cx={c.x}
+            cy={c.y}
+            r={hover && hover.idx === i ? 6 : 4}
+            fill="#38bdf8"
+            stroke="#0f172a"
+            strokeWidth={2}
+            style={{ transition: 'r 0.15s ease' }}
+          />
         ))}
+
+        {/* X Axis Labels with generous vertical padding to prevent cutoff */}
+        {(() => {
+          // Select indices to display so they never overlap
+          const totalPoints = coords.length;
+          let displayedIndices = [];
+
+          if (viewMode === '7d' || viewMode === 'year') {
+            displayedIndices = coords.map((_, i) => i);
+          } else {
+            // For 30 days or month: pick ~6 to 7 evenly spaced indexes
+            const targetCount = 6;
+            const step = (totalPoints - 1) / (targetCount - 1);
+            const indexSet = new Set();
+            for (let k = 0; k < targetCount; k++) {
+              indexSet.add(Math.round(k * step));
+            }
+            displayedIndices = Array.from(indexSet).sort((a, b) => a - b);
+          }
+
+          return displayedIndices.map((idx) => {
+            const c = coords[idx];
+            if (!c) return null;
+            const isHovered = hover && hover.idx === idx;
+            return (
+              <text
+                key={`x-label-${idx}`}
+                x={c.x}
+                y={baselineY + 28}
+                fill={isHovered ? '#38bdf8' : '#94a3b8'}
+                fontSize="12"
+                fontWeight={isHovered ? '700' : '500'}
+                textAnchor="middle"
+              >
+                {c.shortLabel}
+              </text>
+            );
+          });
+        })()}
       </svg>
 
       {hover && (
         <div
-          className="chart-tooltip"
+          className="chart-tooltip modern-tooltip"
           style={{
             left: `${hover.leftPx}px`,
-            top: `${hover.topPx - 62}px`,
-            backgroundColor: '#0f172a',
-            border: '1px solid #1e293b',
-            borderRadius: 16,
-            padding: '0.6rem 0.9rem',
-            minWidth: 90,
-            transform: 'translate(-50%, 0)'
+            top: `${hover.topPx - 68}px`,
           }}
         >
-          <strong style={{ color: '#f8fafc' }}>{ptWeekday(hover.label)}</strong>
-          <div className="muted" style={{ color: '#f8fafc', marginTop: 4 }}>visitas: {hover.value}</div>
+          <div className="tooltip-date">{hover.fullDateLabel}</div>
+          <div className="tooltip-value">
+            <strong>{hover.value}</strong>
+            <span>{metricLabel.toLowerCase()}</span>
+          </div>
         </div>
       )}
     </div>
   );
 };
-
-function ptWeekday(enShort) {
-  const map = { Mon: 'Seg', Tue: 'Ter', Wed: 'Qua', Thu: 'Qui', Fri: 'Sex', Sat: 'Sáb', Sun: 'Dom' };
-  return map[enShort] || enShort;
-}
 
 const AdminDashboard = ({ onLogout }) => {
   const [events, setEvents] = useState([]);
@@ -504,32 +748,71 @@ const AdminDashboard = ({ onLogout }) => {
   const projectCounts = useMemo(() => sumBy(events.filter((event) => event.type === 'project_click'), 'projectTitle'), [events]);
   const certificateCounts = useMemo(() => sumBy(events.filter((event) => event.type === 'certificate_click'), 'certificateTitle'), [events]);
   const latestEvents = useMemo(() => events.slice(0, 8), [events]);
-            {onLogout ? (
-              <button type="button" className="admin-action-btn ghost" onClick={onLogout}>
-                Sair
-              </button>
-            ) : null}
   const hasData = events.length > 0;
 
+  const [searchQuery, setSearchQuery] = useState('');
+  const [typeFilter, setTypeFilter] = useState('all');
+  const [copiedId, setCopiedId] = useState(null);
+
+  const handleCopy = (text, id) => {
+    if (!text) return;
+    try {
+      navigator.clipboard.writeText(text);
+      setCopiedId(id);
+      setTimeout(() => setCopiedId(null), 2000);
+    } catch {}
+  };
+
   const filteredEvents = useMemo(() => {
-    switch (activeCategory) {
-      case 'leads': return events.filter((e) => e.type === 'lead_captured');
-      case 'projects': return events.filter((e) => e.type === 'project_click');
-      case 'certificates': return events.filter((e) => e.type === 'certificate_click');
-      case 'messages': return events.filter((e) => e.type === 'message_sent');
-      case 'visits': return events.filter((e) => e.type === 'page_view');
-      default: return events;
+    let result = events;
+    if (activeCategory === 'leads') result = events.filter((e) => e.type === 'lead_captured');
+    else if (activeCategory === 'projects') result = events.filter((e) => e.type === 'project_click');
+    else if (activeCategory === 'certificates') result = events.filter((e) => e.type === 'certificate_click');
+    else if (activeCategory === 'messages') result = events.filter((e) => e.type === 'message_sent');
+    else if (activeCategory === 'visits') result = events.filter((e) => e.type === 'page_view');
+
+    if (typeFilter !== 'all') {
+      result = result.filter((e) => e.type === typeFilter);
     }
-  }, [events, activeCategory]);
+
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      result = result.filter((e) => {
+        const title = extractName(e.projectTitle || e.certificateTitle || e.subject || e.name || e.title || '').toLowerCase();
+        const email = (e.email || '').toLowerCase();
+        const desc = (e.action || e.path || '').toLowerCase();
+        return title.includes(q) || email.includes(q) || desc.includes(q);
+      });
+    }
+
+    return result;
+  }, [events, activeCategory, typeFilter, searchQuery]);
+
+  const recentList = useMemo(() => {
+    let list = events;
+    if (typeFilter !== 'all') {
+      list = list.filter((e) => e.type === typeFilter);
+    }
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase();
+      list = list.filter((e) => {
+        const title = extractName(e.projectTitle || e.certificateTitle || e.subject || e.name || e.title || '').toLowerCase();
+        const email = (e.email || '').toLowerCase();
+        return title.includes(q) || email.includes(q);
+      });
+    }
+    return list.slice(0, 10);
+  }, [events, typeFilter, searchQuery]);
 
   const categoryTitle = {
     overview: 'Visão Geral',
-    leads: 'Leads',
-    visits: 'Visitas',
-    messages: 'Mensagens',
-    certificates: 'Certificados',
-    projects: 'Projetos',
-    reports: 'Relatórios'
+    leads: 'Leads Capturados',
+    visits: 'Histórico de Visitas',
+    messages: 'Mensagens Recebidas',
+    certificates: 'Interações com Certificados',
+    projects: 'Cliques em Projetos',
+    reports: 'Relatórios de Performance',
+    manage: 'Gerenciar Portfólio',
   }[activeCategory] || 'Eventos';
 
   const renderMainContent = () => {
@@ -537,9 +820,10 @@ const AdminDashboard = ({ onLogout }) => {
       return (
         <>
           <section className="metrics-grid">
-            <StatCard label="Total de Leads" value={totals.leads} helper="capturas no formulário" icon={<FiUsers />} tone="blue" />
-            <StatCard label="Mensagens" value={totals.messages} helper="envios confirmados" icon={<FiMessageCircle />} tone="green" />
-            <StatCard label="Taxa de Conversão" value={`${totals.conversion}%`} helper="leads ÷ acessos" icon={<FiBarChart2 />} tone="purple" />
+            <StatCard label="Total de Visitas" value={totals.pageView} helper="acessos ao site" icon={<FiMousePointer />} tone="blue" trend="Ao vivo" />
+            <StatCard label="Total de Leads" value={totals.leads} helper="capturas de contato" icon={<FiUsers />} tone="purple" trend="Leads" />
+            <StatCard label="Mensagens" value={totals.messages} helper="formulário enviado" icon={<FiMessageCircle />} tone="green" trend="Contatos" />
+            <StatCard label="Taxa de Conversão" value={`${totals.conversion}%`} helper="leads ÷ acessos" icon={<FiBarChart2 />} tone="blue" trend={`${totals.conversion}%`} />
           </section>
 
           <section className="dashboard-grid three-cols">
@@ -554,32 +838,75 @@ const AdminDashboard = ({ onLogout }) => {
             </div>
 
             <div className="dashboard-full" id="reports">
-              <LineCard events={events} range={range} onRangeChange={setRange} />
+              <LineCard events={events} />
             </div>
 
             <article className="panel-card panel-card-table dashboard-full" id="messages">
-              <h3>Eventos recentes</h3>
-              <p className="panel-subtitle">últimos registros capturados do site</p>
+              <div className="table-header-row">
+                <div>
+                  <h3>Eventos e Atividades Recentes</h3>
+                  <p className="panel-subtitle">Histórico em tempo real de navegação e interações</p>
+                </div>
 
-              {hasData ? (
+                <div className="table-filters">
+                  <div className="search-box">
+                    <FiSearch />
+                    <input
+                      type="text"
+                      placeholder="Filtrar por nome ou e-mail..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="filter-pills">
+                    <button className={`filter-pill ${typeFilter === 'all' ? 'active' : ''}`} onClick={() => setTypeFilter('all')}>Todos</button>
+                    <button className={`filter-pill ${typeFilter === 'lead_captured' ? 'active' : ''}`} onClick={() => setTypeFilter('lead_captured')}>Leads</button>
+                    <button className={`filter-pill ${typeFilter === 'message_sent' ? 'active' : ''}`} onClick={() => setTypeFilter('message_sent')}>Mensagens</button>
+                    <button className={`filter-pill ${typeFilter === 'project_click' ? 'active' : ''}`} onClick={() => setTypeFilter('project_click')}>Projetos</button>
+                    <button className={`filter-pill ${typeFilter === 'page_view' ? 'active' : ''}`} onClick={() => setTypeFilter('page_view')}>Visitas</button>
+                  </div>
+                </div>
+              </div>
+
+              {recentList.length > 0 ? (
                 <div className="events-table">
-                  {latestEvents.map((event) => (
-                    <div className="event-row" key={event.id}>
-                      <div className="event-main">
-                        <span className="event-pill" style={{ background: typeColor[event.type] || 'var(--admin-muted)' }}>
-                          {labelByType[event.type] || event.type}
-                        </span>
-                        <strong>{event.projectTitle || event.certificateTitle || event.subject || event.name || event.title || 'Evento'}</strong>
-                        <small>{event.email || event.action || event.path || 'Sem detalhes adicionais'}</small>
+                  {recentList.map((event) => {
+                    const titleText = extractName(event.projectTitle || event.certificateTitle || event.subject || event.name || event.title || 'Evento');
+                    const email = event.email;
+
+                    return (
+                      <div className="event-row" key={event.id}>
+                        <div className="event-main">
+                          <div className="event-row-topline">
+                            <span className="event-pill" style={{ background: typeColor[event.type] || 'var(--admin-muted)' }}>
+                              {labelByType[event.type] || event.type}
+                            </span>
+                            <strong>{titleText}</strong>
+                          </div>
+                          <small>{email || event.action || event.path || 'Sem detalhes adicionais'}</small>
+                        </div>
+                        <div className="event-meta">
+                          {email && (
+                            <button
+                              type="button"
+                              className="copy-btn"
+                              onClick={() => handleCopy(email, event.id)}
+                              title="Copiar e-mail"
+                            >
+                              {copiedId === event.id ? <><FiCheck /> Copiado</> : <><FiCopy /> Copiar</>}
+                            </button>
+                          )}
+                          <time>{formatTime(event.createdAt)}</time>
+                        </div>
                       </div>
-                      <time>{formatTime(event.createdAt)}</time>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               ) : (
                 <div className="empty-state">
-                  <h4>Sem dados ainda</h4>
-                  <p>Interaja com o site ou use o botão de demo para preencher os gráficos rapidamente.</p>
+                  <h4>Nenhum evento encontrado</h4>
+                  <p>{searchQuery ? 'Tente ajustar sua busca ou limpar os filtros.' : 'Interaja com o site ou clique em "Gerar Demo" para preencher o painel.'}</p>
                 </div>
               )}
             </article>
@@ -596,37 +923,69 @@ const AdminDashboard = ({ onLogout }) => {
       );
     }
 
-    // default: filtered list view
+    // Smart Dedicated View for leads, messages, or other filtered lists
     return (
       <section className="dashboard-full">
         <article className="panel-card panel-card-table dashboard-full">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3>{categoryTitle}</h3>
+          <div className="table-header-row">
             <div>
-              <button type="button" className="admin-button ghost" onClick={() => setActiveCategory('overview')}>Voltar</button>
+              <h3>{categoryTitle}</h3>
+              <p className="panel-subtitle">Visualização detalhada ({filteredEvents.length} registros encontrados)</p>
+            </div>
+            <div className="table-filters">
+              <div className="search-box">
+                <FiSearch />
+                <input
+                  type="text"
+                  placeholder="Buscar nesta lista..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
+              <button type="button" className="admin-button ghost" onClick={() => setActiveCategory('overview')}>
+                <FiHome /> Voltar ao Dashboard
+              </button>
             </div>
           </div>
-          <p className="panel-subtitle">Lista filtrada por <strong>{categoryTitle}</strong></p>
 
           {filteredEvents.length ? (
             <div className="events-table">
-              {filteredEvents.map((event) => (
-                <div className="event-row" key={event.id}>
-                  <div className="event-main">
-                    <span className="event-pill" style={{ background: typeColor[event.type] || 'var(--admin-muted)' }}>
-                      {labelByType[event.type] || event.type}
-                    </span>
-                    <strong>{event.projectTitle || event.certificateTitle || event.subject || event.name || event.title || 'Evento'}</strong>
-                    <small>{event.email || event.action || event.path || 'Sem detalhes adicionais'}</small>
+              {filteredEvents.map((event) => {
+                const titleText = extractName(event.projectTitle || event.certificateTitle || event.subject || event.name || event.title || 'Evento');
+                const email = event.email;
+
+                return (
+                  <div className="event-row" key={event.id}>
+                    <div className="event-main">
+                      <div className="event-row-topline">
+                        <span className="event-pill" style={{ background: typeColor[event.type] || 'var(--admin-muted)' }}>
+                          {labelByType[event.type] || event.type}
+                        </span>
+                        <strong>{titleText}</strong>
+                      </div>
+                      <small>{email || event.action || event.path || 'Sem detalhes adicionais'}</small>
+                    </div>
+                    <div className="event-meta">
+                      {email && (
+                        <button
+                          type="button"
+                          className="copy-btn"
+                          onClick={() => handleCopy(email, event.id)}
+                          title="Copiar e-mail"
+                        >
+                          {copiedId === event.id ? <><FiCheck /> Copiado</> : <><FiCopy /> Copiar</>}
+                        </button>
+                      )}
+                      <time>{formatTime(event.createdAt)}</time>
+                    </div>
                   </div>
-                  <time>{formatTime(event.createdAt)}</time>
-                </div>
-              ))}
+                );
+              })}
             </div>
           ) : (
             <div className="empty-state">
-              <h4>Sem registros</h4>
-              <p>Não há eventos para a categoria selecionada.</p>
+              <h4>Sem registros correspondentes</h4>
+              <p>Não há eventos encontrados para esta categoria ou termo de busca.</p>
             </div>
           )}
         </article>
@@ -648,22 +1007,31 @@ const AdminDashboard = ({ onLogout }) => {
 
         <nav className="sidebar-nav" aria-label="Admin navigation">
           <a className={`sidebar-link ${activeCategory === 'overview' ? 'active' : ''}`} href="#overview" onClick={(e) => { e.preventDefault(); setActiveCategory('overview'); closeSidebar(); }}><FiHome /> Dashboard</a>
+          <a className={`sidebar-link ${activeCategory === 'manage' ? 'active' : ''}`} href="#manage" onClick={(e) => { e.preventDefault(); setActiveCategory('manage'); closeSidebar(); }}><FiEdit3 /> Gerenciar Conteúdo</a>
           <a className={`sidebar-link ${activeCategory === 'leads' ? 'active' : ''}`} href="#leads" onClick={(e) => { e.preventDefault(); setActiveCategory('leads'); closeSidebar(); }}><FiUsers /> Leads</a>
-          <a className={`sidebar-link ${activeCategory === 'visits' ? 'active' : ''}`} href="#visits" onClick={(e) => { e.preventDefault(); setActiveCategory('visits'); closeSidebar(); }}><FiMousePointer /> Visitas</a>
           <a className={`sidebar-link ${activeCategory === 'messages' ? 'active' : ''}`} href="#messages" onClick={(e) => { e.preventDefault(); setActiveCategory('messages'); closeSidebar(); }}><FiMessageCircle /> Mensagens</a>
-          <a className={`sidebar-link ${activeCategory === 'certificates' ? 'active' : ''}`} href="#certificates" onClick={(e) => { e.preventDefault(); setActiveCategory('certificates'); closeSidebar(); }}><FiAward /> Certificados</a>
-          <a className={`sidebar-link ${activeCategory === 'reports' ? 'active' : ''}`} href="#reports" onClick={(e) => { e.preventDefault(); setActiveCategory('reports'); closeSidebar(); }}><FiBarChart2 /> Relatórios</a>
-          <a className={`sidebar-link ${activeCategory === 'manage' ? 'active' : ''}`} href="#manage" onClick={(e) => { e.preventDefault(); setActiveCategory('manage'); closeSidebar(); }}>Conteúdo</a>
+          <a className={`sidebar-link ${activeCategory === 'projects' ? 'active' : ''}`} href="#projects" onClick={(e) => { e.preventDefault(); setActiveCategory('projects'); closeSidebar(); }}><FiLayers /> Cliques Projetos</a>
+          <a className={`sidebar-link ${activeCategory === 'certificates' ? 'active' : ''}`} href="#certificates" onClick={(e) => { e.preventDefault(); setActiveCategory('certificates'); closeSidebar(); }}><FiAward /> Cliques Certificados</a>
+          <a className={`sidebar-link ${activeCategory === 'visits' ? 'active' : ''}`} href="#visits" onClick={(e) => { e.preventDefault(); setActiveCategory('visits'); closeSidebar(); }}><FiMousePointer /> Visitas</a>
         </nav>
 
         <div className="sidebar-footer">
           <a className="sidebar-link muted" href="#settings" onClick={closeSidebar}><FiSettings /> Configurações</a>
-          <a className="sidebar-link muted" href="/" onClick={closeSidebar}><FiLogOut /> Sair</a>
+          <a className="sidebar-link muted" href="/" onClick={closeSidebar} title="Navegar de volta à página inicial">
+            <FiExternalLink /> Voltar ao Portfólio
+          </a>
+          {onLogout ? (
+            <button type="button" className="sidebar-link muted sidebar-logout-btn" onClick={() => { closeSidebar(); onLogout(); }} title="Fazer logout da conta">
+              <FiLogOut /> Sair (Logout)
+            </button>
+          ) : (
+            <a className="sidebar-link muted" href="/" onClick={closeSidebar}><FiLogOut /> Sair</a>
+          )}
         </div>
       </aside>
 
       <main className="admin-main" id="overview">
-        <header className="admin-topbar">
+        <div className="admin-topbar">
           <div>
             <div className="topbar-row">
               <button
@@ -681,23 +1049,36 @@ const AdminDashboard = ({ onLogout }) => {
             </div>
             <p>
               {activeCategory === 'manage'
-                ? 'Adicione, edite ou remova conteúdos do portfólio.'
-                : 'Bem-vindo ao painel administrativo do Portfolio Arthur.'}
+                ? 'Adicione, edite ou remova conteúdos do portfólio em tempo real.'
+                : 'Painel analítico e administrativo do Portfolio Arthur.'}
             </p>
           </div>
 
           <div className="admin-actions">
-            <button type="button" className="admin-button ghost" onClick={() => makeExportFile(events)}>
-              <FiDownload /> Exportar Relatório
-            </button>
-            <button type="button" className="admin-button gold" onClick={() => { void seedAnalyticsDemo(); }}>
-              <FiPlay /> Gerar Demo
-            </button>
-            <button type="button" className="admin-button" onClick={() => { void refreshAnalyticsEvents(); }}>
-              <FiRefreshCw /> Atualizar
-            </button>
+            {activeCategory === 'manage' ? (
+              <button type="button" className="admin-button ghost" onClick={() => setActiveCategory('overview')}>
+                <FiHome /> Voltar ao Dashboard
+              </button>
+            ) : (
+              <>
+                <button type="button" className="admin-button ghost" onClick={() => makeExportFile(events)} title="Exportar dados em formato CSV">
+                  <FiDownload /> Exportar CSV
+                </button>
+                <button type="button" className="admin-button" onClick={() => { void refreshAnalyticsEvents(); }} title="Recarregar eventos em tempo real">
+                  <FiRefreshCw /> Atualizar
+                </button>
+              </>
+            )}
+            <a href="/" className="admin-button ghost" title="Retornar à página principal do portfólio">
+              <FiExternalLink /> Voltar ao Portfólio
+            </a>
+            {onLogout && (
+              <button type="button" className="admin-button ghost danger-btn" onClick={onLogout} title="Encerrar sessão no painel">
+                <FiLogOut /> Sair (Logout)
+              </button>
+            )}
           </div>
-        </header>
+        </div>
         {renderMainContent()}
 
         <div className="hidden-anchor" id="settings" />

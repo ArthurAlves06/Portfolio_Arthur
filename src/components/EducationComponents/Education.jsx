@@ -7,13 +7,55 @@ import 'swiper/css/pagination';
 import { EffectCoverflow, Pagination } from 'swiper/modules';
 import CertificateCard from './CertificateCard';
 import adminData from '../../utils/adminData';
-import { FaChevronLeft, FaChevronRight } from 'react-icons/fa';
+import { FaChevronLeft, FaChevronRight, FaGraduationCap, FaLaptopCode } from 'react-icons/fa';
 import { useTranslation } from 'react-i18next';
 import { trackEvent } from '../../utils/analytics';
 import { clonePortfolioCertificates, normalizeCertificateRecord } from '../../data/portfolioContent';
 import ScrollReveal from '../ScrollReveal';
 
-const EducationItem = ({ date, title, institution, description }) => {
+const JourneyTimeline = ({ items }) => {
+  const timelineRef = useRef(null);
+  const [fillPercent, setFillPercent] = useState(0);
+
+  useEffect(() => {
+    let animId;
+    const updateProgress = () => {
+      if (!timelineRef.current) return;
+      const rect = timelineRef.current.getBoundingClientRect();
+      const windowHeight = window.innerHeight || 800;
+
+      // Generous trigger window: start as soon as it nears the lower viewport
+      // and complete gracefully through the end of the section
+      const triggerPoint = windowHeight * 0.78;
+      const timelineTop = rect.top;
+      const timelineHeight = rect.height || 600;
+
+      if (timelineTop > triggerPoint) {
+        setFillPercent(0);
+      } else {
+        const scrolled = triggerPoint - timelineTop;
+        // Smooth linear progression spanning 95% of the extended timeline
+        const pct = Math.min(Math.max((scrolled / (timelineHeight * 0.92)) * 100, 0), 100);
+        setFillPercent(pct);
+      }
+    };
+
+    const onScroll = () => {
+      cancelAnimationFrame(animId);
+      animId = requestAnimationFrame(updateProgress);
+    };
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    updateProgress();
+
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+    };
+  }, []);
+
   const handleMouseMove = (event) => {
     const card = event.currentTarget;
     const rect = card.getBoundingClientRect();
@@ -31,18 +73,54 @@ const EducationItem = ({ date, title, institution, description }) => {
   };
 
   return (
-    <div
-      className="education-item"
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={{ '--mouse-x': '50%', '--mouse-y': '35%' }}
-    >
-      <span className="date">
-        <i className="fa-solid fa-calendar-days"></i> {date}
-      </span>
-      <h3>{title}</h3>
-      <h4>{institution}</h4>
-      <p>{description}</p>
+    <div className="journey-timeline" ref={timelineRef}>
+      <div className="timeline-track-line">
+        <div className="timeline-line-bg" />
+        <div className="timeline-line-fill" style={{ height: `${fillPercent}%` }}>
+          <div className="timeline-line-glow" />
+        </div>
+      </div>
+
+      <div className="timeline-steps">
+        {items.map((it, idx) => {
+          // Node 0 triggers around 15%, Node 1 triggers around 70%
+          const triggerThreshold = idx === 0 ? 15 : 70;
+          const isActive = fillPercent >= triggerThreshold;
+          const Icon = idx === 0 ? FaGraduationCap : FaLaptopCode;
+
+          return (
+            <div
+              key={idx}
+              className={`timeline-step-item step-${idx + 1} ${isActive ? 'is-active' : ''}`}
+            >
+              <div className="timeline-node" aria-label={`Etapa ${idx + 1}`}>
+                <div className="timeline-node-inner">
+                  <Icon className="timeline-node-icon" />
+                  <span className="timeline-node-num">{String(idx + 1).padStart(2, '0')}</span>
+                </div>
+                <div className="timeline-node-pulse" />
+              </div>
+
+              <div
+                className="timeline-card"
+                onMouseMove={handleMouseMove}
+                onMouseLeave={handleMouseLeave}
+                style={{ '--mouse-x': '50%', '--mouse-y': '35%' }}
+              >
+                <div className="timeline-card-header">
+                  <span className="date">
+                    <i className="fa-solid fa-calendar-days"></i> {it.date}
+                  </span>
+                  <span className="timeline-stage-tag">{idx === 0 ? 'Graduação' : 'Especialização'}</span>
+                </div>
+                <h3>{it.title}</h3>
+                <h4>{it.institution}</h4>
+                <p>{it.description}</p>
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };
@@ -68,6 +146,8 @@ const Education = () => {
     : (i18nCerts.length > 0
       ? i18nCerts
       : defaultCertificates.map((certificate) => normalizeCertificateRecord(certificate)));
+
+  const journeyItems = t('education.items', { returnObjects: true }) || [];
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth <= 700);
@@ -96,17 +176,7 @@ const Education = () => {
           </ScrollReveal>
 
           <ScrollReveal delay={140}>
-            <div className="education-box">
-              {(t('education.items', { returnObjects: true }) || []).map((it, idx) => (
-                <EducationItem
-                  key={idx}
-                  date={it.date}
-                  title={it.title}
-                  institution={it.institution}
-                  description={it.description}
-                />
-              ))}
-            </div>
+            <JourneyTimeline items={journeyItems} />
           </ScrollReveal>
         </div>
       </div>
